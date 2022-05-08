@@ -17,7 +17,7 @@ android {
     android.buildFeatures.viewBinding = true
 
     defaultConfig {
-        applicationId = "ke.co.appslab.gradleplugins"
+        applicationId = "com.keronei.survey"
         minSdk = AndroidSdk.minSdkVersion
         targetSdk = AndroidSdk.targetSdkVersion
         versionCode = AndroidSdk.versionCode
