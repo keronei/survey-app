@@ -35,6 +35,7 @@ buildscript {
 
     dependencies {
         classpath("com.hiya:jacoco-android:$jacocoVersion")
+        classpath(Libraries.hiltGradlePlugin)
     }
 }
 

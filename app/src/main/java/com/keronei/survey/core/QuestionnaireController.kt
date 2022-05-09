@@ -16,9 +16,12 @@ object QuestionnaireController {
 
     const val EVENT_QUESTION = 4
 
+    const val UNKNOWN_EVENT = 5
+
     private val questions = LinkedList<QuestionDefinition>()
     private var currentIndex = 0
     private var currentQuestion: EventNode<QuestionDefinition>? = null
+    private val responses = mutableMapOf<String, AnswerData>()
 
     fun setupController(questionnaireDef: QuestionnaireDef) {
         for (question in questionnaireDef.questions) {
@@ -50,9 +53,21 @@ object QuestionnaireController {
         return currentQuestion?.value
     }
 
-    fun saveAnswer(answerData: AnswerData, questionDefinition: QuestionDefinition) {
-
+    fun getCurrentEvent(): Int {
+        if (currentIndex == 0 && currentQuestion == null && !questions.isEmpty()){
+            return EVENT_BEGINNING_QUESTIONNAIRE
+        } else if(currentIndex > 0 && currentQuestion != null){
+            return EVENT_QUESTION
+        }else if(currentIndex > 0 && currentQuestion == null){
+            return EVENT_END_QUESTIONNAIRE
+        }
+        return UNKNOWN_EVENT
     }
 
+    fun saveQuestionResponse(questionDefinition: QuestionDefinition) {
+        responses[questionDefinition.id] = questionDefinition.answerData!!
+    }
+
+    fun getQuestionnaireResponses() = responses.values.toList()
 
 }

@@ -1,3 +1,14 @@
 <resources>
-  <string name="app_name">Survey App</string>
+    <string name="app_name">Survey App</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="password">Password</string>
+    <string name="survey_app_logo">Survey app logo</string>
+    <string name="let_s_start">Let\'s start</string>
+    <string name="profile">Profile</string>
+    <string name="select_a_questionnaire_to_fill">Select a questionnaire to fill.</string>
+    <string name="download_questionnaires">Download Questionnaires</string>
+    <string name="sync_status">Has been synced status.</string>
 </resources>
