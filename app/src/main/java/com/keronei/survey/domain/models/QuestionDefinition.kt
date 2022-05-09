@@ -1,5 +1,6 @@
 package com.keronei.survey.domain.models
 
+import com.keronei.survey.core.AnswerData
 import com.keronei.survey.core.AnswerType
 import com.keronei.survey.core.QuestionType
 
@@ -9,5 +10,6 @@ data class QuestionDefinition(
     val answerType: AnswerType,
     val questionText: String,
     val options: List<ChoiceOption>,
-    val nextQuestion: String?
+    val nextQuestion: String?,
+    val answerData: AnswerData?
 )
