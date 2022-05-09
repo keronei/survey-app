@@ -10,41 +10,11 @@ import com.keronei.survey.presentation.views.QuestionWidget
 
 @SuppressLint("ViewConstructor")
 class SingleLineStringWidget(context: Context, questionDefinition: QuestionDefinition) :
-    QuestionWidget(context, questionDefinition) {
-    var answerEditText: EditText
+    StringWidget(context, questionDefinition) {
 
-    init {
-        answerEditText = getAnswerField()
-
-        setupLayout()
-    }
-
-    private fun setupLayout() {
-        displayCurrentAnswer()
-        addAnswerView(answerEditText)
-    }
-
-    private fun displayCurrentAnswer() {
-        val currentAnswer = getQuestionDefinition().answerData
-        currentAnswer?.let { answerData ->
-            answerEditText.setText(answerData.response)
-        }
-    }
-
-    private fun getAnswerField(): EditText {
-        val editText = EditText(context)
-        editText.id = View.generateViewId()
+    override fun getAnswerField(): EditText {
+        val editText = super.getAnswerField()
         editText.setSingleLine()
-
         return editText
-    }
-
-    override fun getAnswer(): AnswerData? {
-        val answer = getAnswerText()
-        return if (answer.isEmpty()) null else AnswerData(answer)
-    }
-
-    private fun getAnswerText(): String {
-        return answerEditText.text.toString()
     }
 }
