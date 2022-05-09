@@ -17,7 +17,7 @@ package com.keronei.survey
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import ke.co.appslab.gradleplugins.R
+import com.keronei.survey.core.QuestionnaireController
 
 /**
  *  Main Activity which is the Launcher Activity
