@@ -40,7 +40,15 @@ open class StringWidget(context: Context, questionDefinition: QuestionDefinition
 
     override fun getAnswer(): AnswerData? {
         val answer = getAnswerText()
-        return if (answer.isEmpty()) null else AnswerData(answer, getQuestionDefinition().id)
+        return if (answer.isEmpty()) null else AnswerData( getQuestionDefinition().id, answer)
+    }
+
+    override fun saveCurrentAnswer(): Boolean {
+        val answer = getAnswer() ?: return false
+
+        getQuestionDefinition().answerData = answer
+        return true
+
     }
 
     private fun getAnswerText(): String {

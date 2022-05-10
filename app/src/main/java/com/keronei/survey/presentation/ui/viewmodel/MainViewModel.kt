@@ -24,6 +24,8 @@ class MainViewModel(private val questionnaireRepository: QuestionnaireRepository
 
     fun previousQuestion() = currentQuestionnaireController.getPreviousQuestion()
 
+    fun getCurrentEvent() = currentQuestionnaireController.getCurrentEvent()
+
     fun saveQuestionnaireResponses() {
 
     }

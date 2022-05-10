@@ -29,6 +29,8 @@ abstract class QuestionWidget(context: Context,private val questionDefinition: Q
 
     abstract fun getAnswer() : AnswerData?
 
+    abstract fun saveCurrentAnswer(): Boolean
+
     fun setQuestionLabel() {
     }
 

@@ -55,8 +55,15 @@ class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinitio
 
         val currentSelection = cacheSelector[selectedOption]
 
-        return if (currentSelection == null) null else AnswerData(currentSelection)
+        return if (currentSelection == null) null else AnswerData(getQuestionDefinition().id, currentSelection)
 
+    }
+
+    override fun saveCurrentAnswer(): Boolean {
+        val answer = getAnswer() ?: return false
+
+        getQuestionDefinition().answerData = answer
+        return true
     }
 
 

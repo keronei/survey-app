@@ -11,5 +11,5 @@ data class QuestionDefinition(
     val questionText: String,
     val options: List<ChoiceOption>,
     val nextQuestion: String?,
-    val answerData: AnswerData?
+    var answerData: AnswerData?
 )
