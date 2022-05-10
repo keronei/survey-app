@@ -1,23 +1,19 @@
 package com.keronei.survey.presentation.ui.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.keronei.survey.R
 import com.keronei.survey.databinding.HomeFragmentBinding
-import com.keronei.survey.presentation.ui.fragments.tabs.AllQustionnairesFragment
+import com.keronei.survey.presentation.ui.fragments.tabs.AllQuestionnairesFragment
 import com.keronei.survey.presentation.ui.fragments.tabs.QuestionnaireTabsAdapter
 import com.keronei.survey.presentation.ui.fragments.tabs.SubmissionsFragment
 
 class HomeFragment : Fragment() {
-
-    private lateinit var viewModel: HomeViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,7 +26,7 @@ class HomeFragment : Fragment() {
 
         val adapter = QuestionnaireTabsAdapter(this)
 
-        adapter.addFragment(AllQustionnairesFragment(), "Fill New")
+        adapter.addFragment(AllQuestionnairesFragment(), "Fill New")
         adapter.addFragment(SubmissionsFragment(), "Submissions")
 
         viewPager.adapter = adapter
@@ -42,7 +38,6 @@ class HomeFragment : Fragment() {
 
         return homeFragmentBinding.root
     }
-
 
 
 }

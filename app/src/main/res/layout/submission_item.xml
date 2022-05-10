@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="submission"
+            type="com.keronei.survey.presentation.models.SubmissionPresentation" />
+    </data>
+
     <androidx.cardview.widget.CardView
         android:layout_margin="8dp"
         android:layout_width="match_parent"
@@ -19,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
+                android:text="@{submission.submissionName}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/sync_status"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -31,17 +38,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/sync_status"
-                android:src="@drawable/ic_baseline_cloud_sync_24"
+                android:src="@drawable/ic_baseline_sync_problem_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/submission_name"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@android:color/holo_green_dark" />
+                app:tint="@color/unsynced" />
 
             <TextView
                 android:id="@+id/questionnaire_name_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
+                android:text="@{submission.questionnaireName}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/submissions_date"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -54,6 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
+                android:text="@{submission.submissionDate}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/questionnaire_name_sub"

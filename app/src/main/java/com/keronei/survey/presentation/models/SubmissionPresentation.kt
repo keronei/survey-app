@@ -1,6 +1,6 @@
-package com.keronei.survey.domain.models
+package com.keronei.survey.presentation.models
 
-data class Submission(
+data class SubmissionPresentation(
     val id: String,
     val submissionDate: String,
     val submissionName: String,

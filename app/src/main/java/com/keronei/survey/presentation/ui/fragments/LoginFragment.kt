@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.keronei.survey.R
+import com.keronei.survey.presentation.ui.viewmodel.LoginViewModel
 
 class LoginFragment : Fragment() {
 

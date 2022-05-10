@@ -6,18 +6,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.keronei.keroscheckin.R
-import com.keronei.keroscheckin.databinding.ItemRegionLayoutBinding
-import com.keronei.keroscheckin.models.RegionPresentation
-import java.util.*
+import com.keronei.survey.databinding.QuestionnaireItemBinding
+import com.keronei.survey.presentation.models.QuestionnaireDefPresentation
 
 class QuestionnairesRecyclerAdapter(
-    private val itemSelected: (region: RegionPresentation) -> Unit,
+    private val itemSelected: (questionnaire: QuestionnaireDefPresentation) -> Unit,
     private val context: Context
 ) :
-    ListAdapter<RegionPresentation, QuestionnairesRecyclerAdapter.RegionsViewHolder>(FilmDiffUtil()) {
+    ListAdapter<QuestionnaireDefPresentation, QuestionnairesRecyclerAdapter.RegionsViewHolder>(FilmDiffUtil()) {
 
-    var untouchedList = listOf<RegionPresentation>()
+    var untouchedList = listOf<QuestionnaireDefPresentation>()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -27,54 +25,26 @@ class QuestionnairesRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: RegionsViewHolder, position: Int) {
-        val region = getItem(position)
-        holder.bind(region, context)
+        val defPresentation = getItem(position)
+        holder.bind(defPresentation, context)
 
         holder.binding.root.setOnClickListener {
-            itemSelected(region)
+            itemSelected(defPresentation)
         }
     }
 
-    fun modifyList(list: List<RegionPresentation>) {
+    fun modifyList(list: List<QuestionnaireDefPresentation>) {
         untouchedList = list
         submitList(list)
     }
 
-    fun filter(query: CharSequence?) {
-        val list = mutableListOf<RegionPresentation>()
 
-        if (!query.isNullOrEmpty()) {
-            list.addAll(untouchedList.filter { item ->
-                item.name.toLowerCase(Locale.getDefault())
-                    .contains(query.toString().toLowerCase(Locale.getDefault()))
-
-            })
-        } else {
-            list.addAll(untouchedList)
-        }
-
-        submitList(list)
-    }
-
-
-    class RegionsViewHolder(val binding: ItemRegionLayoutBinding) :
+    class RegionsViewHolder(val binding: QuestionnaireItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(attendeePresentation: RegionPresentation, context: Context) {
-            binding.regionInfo = attendeePresentation
-            val count = attendeePresentation.memberCount
-            when {
-                count.toInt() < 1 -> {
-                    binding.regionMemberCount.text = context.getString(R.string.no_member_in_region)
-                }
-                count.toInt() > 1 -> {
-                    binding.regionMemberCount.text = "$count members."
-                }
-                else -> {
-                    binding.regionMemberCount.text = context.getString(R.string.one_member)
-                }
-            }
+        fun bind(questionnaireDef: QuestionnaireDefPresentation, context: Context) {
+            binding.questionnaire = questionnaireDef
 
             binding.executePendingBindings()
         }
@@ -82,7 +52,7 @@ class QuestionnairesRecyclerAdapter(
         companion object {
             fun from(parent: ViewGroup): RegionsViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
-                val itemFilmBinding = ItemRegionLayoutBinding.inflate(inflater, parent, false)
+                val itemFilmBinding = QuestionnaireItemBinding.inflate(inflater, parent, false)
 
                 return RegionsViewHolder(itemFilmBinding)
             }
@@ -91,17 +61,17 @@ class QuestionnairesRecyclerAdapter(
 
     }
 
-    class FilmDiffUtil : DiffUtil.ItemCallback<RegionPresentation>() {
+    class FilmDiffUtil : DiffUtil.ItemCallback<QuestionnaireDefPresentation>() {
         override fun areItemsTheSame(
-            oldItem: RegionPresentation,
-            newItem: RegionPresentation
+            oldItem: QuestionnaireDefPresentation,
+            newItem: QuestionnaireDefPresentation
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: RegionPresentation,
-            newItem: RegionPresentation
+            oldItem: QuestionnaireDefPresentation,
+            newItem: QuestionnaireDefPresentation
         ): Boolean {
             return oldItem == newItem
         }

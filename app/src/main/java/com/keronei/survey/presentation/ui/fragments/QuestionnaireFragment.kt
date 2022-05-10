@@ -17,8 +17,10 @@ import com.keronei.survey.core.WidgetFactory
 import com.keronei.survey.databinding.FragmentQuestionnaireBinding
 import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
 import com.keronei.survey.presentation.views.QuestionWidget
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
+@ExperimentalCoroutinesApi
 class QuestionnaireFragment : Fragment() {
 
     private lateinit var fragmentQuestionnaireBinding: FragmentQuestionnaireBinding
@@ -117,6 +119,7 @@ class QuestionnaireFragment : Fragment() {
                 Toast.makeText(context, "Response is empty.", Toast.LENGTH_SHORT).show()
                 return false
             }
+            mainViewModel.saveCurrentAnswer(currentQuestionOnDisplay!!.getQuestionDefinition())
         }
         return true
 
@@ -129,7 +132,7 @@ class QuestionnaireFragment : Fragment() {
             }
 
             EVENT_END_QUESTIONNAIRE -> {
-
+                fragmentQuestionnaireBinding.btnNext.text = getString(R.string.finish)
             }
 
             UNKNOWN_EVENT -> {

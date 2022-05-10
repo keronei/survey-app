@@ -1,4 +1,4 @@
-package com.keronei.survey.presentation.ui.fragments
+package com.keronei.survey.presentation.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 
