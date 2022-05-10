@@ -5,7 +5,7 @@ import com.keronei.survey.domain.models.QuestionnaireDef
 import kotlinx.coroutines.flow.Flow
 
 interface QuestionnaireRepository {
-    fun getQuestionnaireById(string: String): QuestionnaireDef
+    fun getQuestionnaireById(string: String): Flow<QuestionnaireDef>
 
     fun getQuestionnaires(): Flow<List<QuestionnaireDef>>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright $YEAR Keronei Lincoln
+ * Copyright 2022 Keronei Lincoln
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,3 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.keronei.survey.core
+
+sealed class Resource<out T> {
+    object Loading : Resource<Nothing>()
+    data class Success<out T>(val data: T) : Resource<T>()
+    data class Failure(val exception: Exception) : Resource<Nothing>()
+}
