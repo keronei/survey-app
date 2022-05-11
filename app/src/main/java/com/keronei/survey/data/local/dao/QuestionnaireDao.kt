@@ -18,7 +18,7 @@ interface QuestionnaireDao {
     ): Long
 
     @Query("SELECT * FROM QuestionnaireDefDTO")
-    fun getAllQuestionnaires(): Flow<QuestionnaireDefDTO>
+    fun getAllQuestionnaires(): Flow<List<QuestionnaireDefDTO>>
 
     @Query("SELECT * FROM QuestionnaireDefDTO WHERE id = :id")
     fun getQuestionnaireById(id: String): Flow<QuestionnaireDefDTO>

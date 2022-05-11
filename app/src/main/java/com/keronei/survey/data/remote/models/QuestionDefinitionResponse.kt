@@ -8,7 +8,7 @@ import com.keronei.survey.core.QuestionType
 data class QuestionDefinitionResponse(
     val id: String,
     @SerializedName("question_type")
-    val questionType: QuestionType,
+    val questionType: String,
     @SerializedName("answer_type")
     val answerType: String,
     @SerializedName("question_text")

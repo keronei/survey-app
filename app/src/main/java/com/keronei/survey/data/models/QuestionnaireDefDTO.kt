@@ -10,7 +10,7 @@ data class QuestionnaireDefDTO(
     @PrimaryKey
     val id: String,
     val language: String,
-    val questions: List<QuestionnaireDefDTO>,
+    val questions: List<QuestionDefDTO>,
     val startQuestionId: String,
     @ColumnInfo(defaultValue = "(strftime('%s','now'))")
     val downloadDate: Long
