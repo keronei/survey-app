@@ -81,52 +81,58 @@ object QuestionnaireController {
     }
 
     private fun attachPreceding(
-        list: List<QuestionDefinition>,
+        list: MutableList<QuestionDefinition>,
         linkedList: LinkedList<QuestionDefinition>,
         parent: String
     ): LinkedList<QuestionDefinition> {
+        println("Called list: ${list.size} ")
 
         if (parent == "") {
             // last-born node
             val item = list.firstOrNull { node -> node.nextQuestion == null }
             if (item != null) {
-                // remove and recall
-                val nextList = mutableListOf<QuestionDefinition>()
+                return if (list.size == 1) {
+                    questions.push(item)
+                    println("Remaining with ${list.first().questionText}// in empty parent")
 
-                nextList.addAll(list)
+                    linkedList
+                } else {
 
-                questions.push(item)
-                nextList.remove(item)
+                    //questions.push(item)
+                    list.remove(item)
 
-                if (list.isEmpty()) {
-                    return linkedList
+                    questions.push(item)
+
+                    println("Removed -> ${item.questionText}// in empty parent")
+
+                    attachPreceding(list, linkedList, item.id)
                 }
-
-                return attachPreceding(nextList, linkedList, item.nextQuestion ?: "")
             }
         } else {
-            // has parent previous
-            val item = list.firstOrNull { item -> item.id == parent }
+            // previous id points to next of current qsn
+            val item = list.firstOrNull { item -> item.nextQuestion == parent }
 
             if (item != null) {
-                // remove and recall
-                val nextList = mutableListOf<QuestionDefinition>()
+                return if (list.size == 1) {
+                    println("Remaining with ${list.first().questionText}// in $parent as parent :: The end")
+                    questions.push(list.first())
 
-                nextList.addAll(list)
+                    linkedList
+                } else {
+                    list.remove(item)
 
-                questions.push(item)
-                nextList.remove(item)
+                    questions.push(item)
 
-                if (list.isEmpty()) {
-                    return linkedList
+                    println("Removed -> ${item.questionText}// in $parent as parent and proceeding with next qsn-> ${item.id}.")
+
+                    attachPreceding(list, linkedList, item.id)
                 }
 
-                return attachPreceding(nextList, linkedList, item.nextQuestion ?: "")
             }
 
         }
 
-        return  linkedList
+        return linkedList
     }
 
     fun getCurrentQuestion() = currentQuestion?.value

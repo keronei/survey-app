@@ -19,7 +19,7 @@ class TestController {
         "test_1",
         "text",
         "text",
-        "who owns the farm",
+        "who owns the farm test 1",
         listOf(),
         "test_2"
     )
@@ -27,7 +27,7 @@ class TestController {
         "test_2",
         "text",
         "text",
-        "who owns the farm",
+        "what source of water does the farmer use test 2",
         listOf(),
         null
     )
@@ -60,17 +60,34 @@ class TestController {
     fun pushing_two_questions_returns_one_with_next_question_first() {
         val firstQuestion = controller.getCurrentQuestion()
 
-        assertThat("With next question should be first", firstQuestion!!.id == question1.id)
+        assertThat("Current question should be first", firstQuestion!!.id == question1.id)
 
     }
 
     @Test
-    fun next_question_is_one_without_next() {
+    fun next_question_matches_test_2() {
+        controller.getNextQuestion()// starts at first question
         val nextQuestion = controller.getNextQuestion()
 
+        println(nextQuestion)
+
         assertThat(
-            "Next does not have next question, because is the last",
-            nextQuestion!!.nextQuestion == null
+            "Next should return test_2 because image capture is added by the controller as last question",
+            nextQuestion!!.id == "test_2"
         )
+    }
+
+    @Test
+    fun next_question_after_2_is_one_without_next() {
+        val first = controller.getNextQuestion() // returns qsn_1
+        println(first)
+        val second = controller.getNextQuestion() // returns qsn2
+        println(second)
+        val nextQuestion = controller.getNextQuestion()// returns img_capture
+
+        println("Expected img_capture"+nextQuestion)
+        assert(
+            nextQuestion!!.nextQuestion == null,
+        ) { "Next(should be 3rd and last - image capture) does not have next question, because is the last" }
     }
 }
