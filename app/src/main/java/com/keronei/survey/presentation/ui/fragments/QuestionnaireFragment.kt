@@ -61,7 +61,7 @@ class QuestionnaireFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        widgetFactory = WidgetFactory(requireActivity())
+        widgetFactory = WidgetFactory(requireContext(), requireActivity())
         // On start, the user is starting a questionnaire and is in Q1
         val initialQuestion = mainViewModel.getCurrentQuestion()
 
@@ -78,7 +78,7 @@ class QuestionnaireFragment : Fragment() {
     }
 
     private fun handleNavigationButtonsClick() {
-        fragmentQuestionnaireBinding.btnBack.setOnClickListener {
+        fragmentQuestionnaireBinding.btnNext.setOnClickListener {
             val currentEvent = mainViewModel.getCurrentEvent()
 
             val answerOk = validateCurrentAnswer()
@@ -100,7 +100,7 @@ class QuestionnaireFragment : Fragment() {
             }
         }
 
-        fragmentQuestionnaireBinding.btnNext.setOnClickListener {
+        fragmentQuestionnaireBinding.btnBack.setOnClickListener {
             val answerOk = validateCurrentAnswer()
 
             if (!answerOk) {

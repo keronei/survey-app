@@ -16,6 +16,7 @@
 package com.keronei.survey.core.di
 
 import android.content.Context
+import com.keronei.survey.BuildConfig
 import com.keronei.survey.data.remote.QuerySurveysApiService
 import com.keronei.survey.helpers.ConnectivityProvider
 import dagger.Module

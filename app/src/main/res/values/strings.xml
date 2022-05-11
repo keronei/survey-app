@@ -16,4 +16,8 @@
     <string name="no_questionnaire">No Questionnaires on your device.</string>
     <string name="you_have_no_submissions_n_download_and_select_a_questionnaire_to_start_filling">You have no submissions. \n Download and select a questionnaire to start filling.</string>
     <string name="loading">Getting questionnaires...</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="retake_picture">Retake Picture</string>
+    <string name="cannot_open_submissions">Couldn\'t view submissions.</string>
+    <string name="loading_submissions">Waiting for submissions...</string>
 </resources>

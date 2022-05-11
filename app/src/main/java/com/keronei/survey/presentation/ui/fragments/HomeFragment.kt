@@ -28,7 +28,9 @@ import com.keronei.survey.presentation.ui.fragments.tabs.AllQuestionnairesFragme
 import com.keronei.survey.presentation.ui.fragments.tabs.QuestionnaireTabsAdapter
 import com.keronei.survey.presentation.ui.fragments.tabs.SubmissionsFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     override fun onCreateView(

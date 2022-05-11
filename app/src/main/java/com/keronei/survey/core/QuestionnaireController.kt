@@ -17,6 +17,7 @@ package com.keronei.survey.core
 
 import com.keronei.survey.core.events.EventNode
 import com.keronei.survey.core.events.LinkedList
+import com.keronei.survey.domain.models.ChoiceOption
 import com.keronei.survey.domain.models.QuestionDefinition
 import com.keronei.survey.domain.models.QuestionnaireDef
 
@@ -39,44 +40,93 @@ object QuestionnaireController {
     private val responses = mutableMapOf<String, AnswerData>()
 
     fun setupController(questionnaireDef: QuestionnaireDef) {
-        attachPreceding(questionnaireDef.questions, questions)
+        // hack to add image capture in the end
+        // section
+        val mutableListOfQuestion = mutableListOf<QuestionDefinition>()
+
+        mutableListOfQuestion.addAll(questionnaireDef.questions)
+
+        val question =
+            questionnaireDef.questions.first { questionDefinition -> questionDefinition.nextQuestion == null }
+
+        val predefinedLastQuestion = QuestionDefinition(
+            question.id,
+            question.questionType,
+            question.answerType,
+            question.questionText,
+            question.options,
+            "image_capture",
+            null
+        )
+
+        mutableListOfQuestion.remove(question)
+
+        val imageCaptureQuestion = QuestionDefinition(
+            "image_capture",
+            QuestionType.IMAGE_CAPTURE,
+            AnswerType.IMAGE_PATH,
+            "Take a picture.",
+            emptyList(),
+            null,
+            null
+        )
+
+        val additions = listOf(predefinedLastQuestion, imageCaptureQuestion)
+
+        mutableListOfQuestion.addAll(additions)
+        // end section
+
+        attachPreceding(mutableListOfQuestion, questions, "")
         currentQuestion = questions.eventNodeAt(0)
     }
 
     private fun attachPreceding(
         list: List<QuestionDefinition>,
-        linkedList: LinkedList<QuestionDefinition>
+        linkedList: LinkedList<QuestionDefinition>,
+        parent: String
     ): LinkedList<QuestionDefinition> {
-        var parent = ""
-        var toRemove: QuestionDefinition? = null
 
         if (parent == "") {
             // last-born node
             val item = list.firstOrNull { node -> node.nextQuestion == null }
             if (item != null) {
-                parent = item.id
-                toRemove = item
+                // remove and recall
+                val nextList = mutableListOf<QuestionDefinition>()
+
+                nextList.addAll(list)
+
+                questions.push(item)
+                nextList.remove(item)
+
+                if (list.isEmpty()) {
+                    return linkedList
+                }
+
+                return attachPreceding(nextList, linkedList, item.nextQuestion ?: "")
             }
         } else {
             // has parent previous
-            toRemove = list.firstOrNull { item -> item.id == parent }
-            parent = toRemove?.nextQuestion ?: ""
+            val item = list.firstOrNull { item -> item.id == parent }
+
+            if (item != null) {
+                // remove and recall
+                val nextList = mutableListOf<QuestionDefinition>()
+
+                nextList.addAll(list)
+
+                questions.push(item)
+                nextList.remove(item)
+
+                if (list.isEmpty()) {
+                    return linkedList
+                }
+
+                return attachPreceding(nextList, linkedList, item.nextQuestion ?: "")
+            }
+
         }
 
-        if (list.isEmpty()) {
-            return linkedList
-        }
-
-        val nextList = mutableListOf<QuestionDefinition>()
-
-        nextList.addAll(list)
-
-        toRemove?.let {
-            questions.push(it)
-            nextList.remove(toRemove)
-        }
-
-        return attachPreceding(nextList, linkedList)
+        return  linkedList
     }
 
     fun getCurrentQuestion() = currentQuestion?.value

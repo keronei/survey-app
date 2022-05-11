@@ -40,7 +40,9 @@ interface QuestionnaireDao {
     )
     fun getAllQuestionnaires(): Flow<List<QuestionnaireSubDTO>>
 
-    @Query("SELECT * FROM QuestionnaireDefDTO WHERE id = :id")
+    @Query("SELECT *, (SELECT COUNT(*) FROM SubmissionsDTO"+
+            " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
+            " AS submissionsCount  FROM QuestionnaireDefDTO WHERE id = :id")
     fun getQuestionnaireById(id: String): Flow<QuestionnaireSubDTO>
 
     @Delete

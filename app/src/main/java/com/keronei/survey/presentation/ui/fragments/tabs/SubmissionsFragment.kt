@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.keronei.survey.R
+import com.keronei.survey.core.SubmissionViewState
 import com.keronei.survey.databinding.SubmissionsFragmentBinding
 import com.keronei.survey.presentation.ui.SubmissionsRecyclerAdapter
 import com.keronei.survey.presentation.ui.viewmodel.SubmissionsViewModel
@@ -68,15 +69,30 @@ class SubmissionsFragment : Fragment() {
 
             lifecycleScope.launchWhenResumed {
                 viewModel.getSubmissions().collect { submissions ->
-                    adapter.submitList(submissions)
 
-                    if (submissions.isEmpty()) {
-                        submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
-                        submissionsFragmentBinding.submissionsRecycler.visibility = GONE
-                    } else {
-                        submissionsFragmentBinding.noSubmissionsText.visibility = GONE
-                        submissionsFragmentBinding.submissionsRecycler.visibility = VISIBLE
+                    when(submissions){
+                        SubmissionViewState.Empty -> {
+                            adapter.submitList(emptyList())
+                            submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
+                            submissionsFragmentBinding.submissionsRecycler.visibility = GONE
+                        }
+                        is SubmissionViewState.Error -> {
+                            submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
+                            submissionsFragmentBinding.noSubmissionsText.text = getString(R.string.cannot_open_submissions)
+                            submissionsFragmentBinding.submissionsRecycler.visibility = GONE
+                        }
+                        SubmissionViewState.Loading -> {
+                            submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
+                            submissionsFragmentBinding.noSubmissionsText.text = getString(R.string.loading_submissions)
+                            submissionsFragmentBinding.submissionsRecycler.visibility = GONE
+                        }
+                        is SubmissionViewState.Success -> {
+                            adapter.submitList(submissions.presentations)
+                            submissionsFragmentBinding.noSubmissionsText.visibility = GONE
+                            submissionsFragmentBinding.submissionsRecycler.visibility = VISIBLE
+                        }
                     }
+
                 }
             }
         }

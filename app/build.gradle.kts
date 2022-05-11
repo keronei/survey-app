@@ -25,6 +25,12 @@ android {
         versionCode = AndroidSdk.versionCode
         versionName = AndroidSdk.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
+            }
+        }
     }
 
     testOptions {
@@ -80,6 +86,9 @@ android {
         implementation(Libraries.coroutines)
         implementation(Libraries.coroutinesAndroid)
 
+        //easy permissions
+        implementation(Libraries.easyPermissions)
+
         // Work
         implementation(Libraries.work)
         implementation(Libraries.hiltWork)
@@ -90,10 +99,8 @@ android {
         androidTestImplementation(TestLibraries.annotation)
 
         testImplementation(TestLibraries.junit4)
+        testImplementation(TestLibraries.junit_ktx)
+        testImplementation(TestLibraries.ext_test_junit4)
+        testImplementation(TestLibraries.core_testing)
     }
-}
-dependencies {
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
 }

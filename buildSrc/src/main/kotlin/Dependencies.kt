@@ -6,12 +6,15 @@ object Versions {
     const val constraintLayout = "2.1.3"
     const val ktx = "1.7.0"
     const val material = "1.6.0-alpha02"
+    const val junit_ktx = "1.1.2"
+    const val ext_junit = "1.1.3"
+    const val lifecycle = "2.0.0"
 
     //Version codes for all the test libraries
     const val junit4 = "4.13.2"
     const val testRunner = "1.4.1-alpha03"
     const val espresso = "3.5.0-alpha03"
-    const val annotation = "1.4.0-alpha02"
+    const val annotation = "1.3.0"
 
     // architecture
     const val architecture = "2.4.1"
@@ -42,6 +45,8 @@ object Versions {
 
     // Coroutines
     const val coroutines = "1.3.9"
+
+    const val easyPermission = "3.0.0"
 
     // Gradle Plugins
     const val ktlint = "10.2.1"
@@ -119,14 +124,21 @@ object Libraries {
     const val work = "androidx.work:work-runtime-ktx:${Versions.work}"
     const val hiltWork = "androidx.hilt:hilt-work:${Versions.hilt_compiler}"
     const val multiProcessWorkManager = "androidx.work:work-multiprocess:${Versions.work}"
+
+    const val easyPermissions = "pub.devrel:easypermissions:${Versions.easyPermission}"
 }
 
 object TestLibraries {
     //any test library is added here
     const val junit4 = "junit:junit:${Versions.junit4}"
+    const val junit_ktx = "androidx.test.ext:junit-ktx:${Versions.junit_ktx}"
     const val testRunner = "androidx.test:runner:${Versions.testRunner}"
     const val espresso = "androidx.test.espresso:espresso-core:${Versions.espresso}"
+    const val ext_test_junit4 = "androidx.test.ext:junit-ktx:${Versions.ext_junit}"
+    const val core_testing = "androidx.arch.core:core-testing:${Versions.lifecycle}"
     const val annotation = "androidx.annotation:annotation:${Versions.annotation}"
+    const val workmanager_testing = "androidx.work:work-testing:${Versions.work}"
+    const val hilt_android_testing = "com.google.dagger:hilt-android-testing:${Versions.hilt_version}"
 }
 
 
