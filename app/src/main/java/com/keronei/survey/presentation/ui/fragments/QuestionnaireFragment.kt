@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Keronei Lincoln
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.keronei.survey.presentation.ui.fragments
 
 import android.os.Bundle
@@ -17,10 +32,11 @@ import com.keronei.survey.core.WidgetFactory
 import com.keronei.survey.databinding.FragmentQuestionnaireBinding
 import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
 import com.keronei.survey.presentation.views.QuestionWidget
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-
 @ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class QuestionnaireFragment : Fragment() {
 
     private lateinit var fragmentQuestionnaireBinding: FragmentQuestionnaireBinding
@@ -32,7 +48,8 @@ class QuestionnaireFragment : Fragment() {
     private var currentQuestionOnDisplay: QuestionWidget? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -55,7 +72,6 @@ class QuestionnaireFragment : Fragment() {
             fragmentQuestionnaireBinding.questionHolder.addView(questionView)
 
             currentQuestionOnDisplay = questionView
-
         }
 
         handleNavigationButtonsClick()
@@ -122,13 +138,11 @@ class QuestionnaireFragment : Fragment() {
             mainViewModel.saveCurrentAnswer(currentQuestionOnDisplay!!.getQuestionDefinition())
         }
         return true
-
     }
 
     private fun handleEvent(event: Int) {
         when (event) {
             EVENT_BEGINNING_QUESTIONNAIRE -> {
-
             }
 
             EVENT_END_QUESTIONNAIRE -> {
@@ -136,10 +150,7 @@ class QuestionnaireFragment : Fragment() {
             }
 
             UNKNOWN_EVENT -> {
-
             }
         }
     }
-
-
 }

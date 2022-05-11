@@ -46,6 +46,4 @@ class ObjectCollectionConverter {
             gsonInstance.fromJson(json, Array<QuestionDefDTO>::class.java).asList()
         }
     }
-
-
 }

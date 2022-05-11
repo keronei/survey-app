@@ -15,4 +15,5 @@
     <string name="finish">Finish</string>
     <string name="no_questionnaire">No Questionnaires on your device.</string>
     <string name="you_have_no_submissions_n_download_and_select_a_questionnaire_to_start_filling">You have no submissions. \n Download and select a questionnaire to start filling.</string>
+    <string name="loading">Getting questionnaires...</string>
 </resources>

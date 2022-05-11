@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Keronei Lincoln
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.keronei.survey.presentation.ui.fragments.tabs
 
 import android.os.Bundle
@@ -26,7 +41,8 @@ class SubmissionsFragment : Fragment() {
     private lateinit var adapter: SubmissionsRecyclerAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         submissionsFragmentBinding =
@@ -48,28 +64,26 @@ class SubmissionsFragment : Fragment() {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }, requireContext())
 
-        setupSubmissionsRecycler()
+            setupSubmissionsRecycler()
 
-        lifecycleScope.launchWhenResumed {
-            viewModel.getSubmissions().collect { submissions ->
-                adapter.submitList(submissions)
+            lifecycleScope.launchWhenResumed {
+                viewModel.getSubmissions().collect { submissions ->
+                    adapter.submitList(submissions)
 
-                if (submissions.isEmpty()) {
-                    submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
-                    submissionsFragmentBinding.submissionsRecycler.visibility = GONE
-                } else {
-                    submissionsFragmentBinding.noSubmissionsText.visibility = GONE
-                    submissionsFragmentBinding.submissionsRecycler.visibility = VISIBLE
+                    if (submissions.isEmpty()) {
+                        submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
+                        submissionsFragmentBinding.submissionsRecycler.visibility = GONE
+                    } else {
+                        submissionsFragmentBinding.noSubmissionsText.visibility = GONE
+                        submissionsFragmentBinding.submissionsRecycler.visibility = VISIBLE
+                    }
                 }
             }
         }
-    }
 
-    private fun setupSubmissionsRecycler() {
-        with(submissionsFragmentBinding.submissionsRecycler) {
-            adapter = adapter
+        private fun setupSubmissionsRecycler() {
+            with(submissionsFragmentBinding.submissionsRecycler) {
+                adapter = adapter
+            }
         }
     }
-
-
-}

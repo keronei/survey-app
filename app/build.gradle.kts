@@ -55,7 +55,6 @@ android {
         // nav
         implementation(Libraries.navigationFragment)
 
-
         // Hilt - DI
         implementation(Libraries.daggerHilt)
         kapt(Libraries.hiltCompiler)

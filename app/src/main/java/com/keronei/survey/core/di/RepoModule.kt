@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Keronei Lincoln
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.keronei.survey.core.di
 
 import com.keronei.survey.data.QuestionnairesRepoImpl
@@ -5,7 +20,7 @@ import com.keronei.survey.data.SubmissionsRepoImpl
 import com.keronei.survey.data.local.LocalDataSource
 import com.keronei.survey.data.local.dao.QuestionnaireDao
 import com.keronei.survey.data.local.dao.SubmissionsDao
-import com.keronei.survey.data.remote.NetworkDataSource
+import com.keronei.survey.data.remote.RemoteDataSource
 import com.keronei.survey.data.remote.QuerySurveysApiService
 import com.keronei.survey.domain.repositories.QuestionnaireRepository
 import com.keronei.survey.domain.repositories.SubmissionsRepository
@@ -30,20 +45,20 @@ object RepoModule {
 
     @Singleton
     @Provides
-    fun providesNetworkDataSource(apiService: QuerySurveysApiService): NetworkDataSource =
-        NetworkDataSource(apiService)
+    fun providesNetworkDataSource(apiService: QuerySurveysApiService): RemoteDataSource =
+        RemoteDataSource(apiService)
 
     @Singleton
     @Provides
     fun providesQuestionnairesRepo(
         localDataSource: LocalDataSource,
-        networkDataSource: NetworkDataSource
-    ): QuestionnaireRepository = QuestionnairesRepoImpl(localDataSource, networkDataSource)
+        remoteDataSource: RemoteDataSource
+    ): QuestionnaireRepository = QuestionnairesRepoImpl(localDataSource, remoteDataSource)
 
     @Singleton
     @Provides
     fun providesSubmissionsRepo(
         localDataSource: LocalDataSource,
-        networkDataSource: NetworkDataSource
-    ): SubmissionsRepository = SubmissionsRepoImpl(networkDataSource, localDataSource)
+        remoteDataSource: RemoteDataSource
+    ): SubmissionsRepository = SubmissionsRepoImpl(remoteDataSource, localDataSource)
 }

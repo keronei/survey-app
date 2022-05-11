@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.keronei.survey.domain.models
+package com.keronei.survey.core
 
-import com.keronei.survey.core.AnswerData
-import com.keronei.survey.core.AnswerType
-import com.keronei.survey.core.QuestionType
+import com.keronei.survey.presentation.models.SubmissionPresentation
 
-data class QuestionDefinition(
-    val id: String,
-    val questionType: QuestionType,
-    val answerType: AnswerType,
-    val questionText: String,
-    val options: List<ChoiceOption>,
-    val nextQuestion: String?,
-    var answerData: AnswerData?
-)
+sealed class SubmissionViewState {
+    object Loading : SubmissionViewState()
+    object Empty : SubmissionViewState()
+    data class Success(val presentations: List<SubmissionPresentation>) : SubmissionViewState()
+    data class Error(val exception: Throwable) : SubmissionViewState()
+}
