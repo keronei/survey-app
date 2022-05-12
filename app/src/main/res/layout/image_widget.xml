@@ -4,13 +4,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp">
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/image_preview"
             android:contentDescription="@string/image_preview_window"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_baseline_camera_alt_24"
+            android:background="@drawable/image_border"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -48,7 +48,6 @@ open class StringWidget(context: Context, questionDefinition: QuestionDefinition
     open fun getAnswerField(): EditText {
         val editText = EditText(context)
         editText.id = View.generateViewId()
-        editText.setSingleLine()
 
         return editText
     }

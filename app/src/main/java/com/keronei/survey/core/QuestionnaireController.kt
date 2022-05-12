@@ -147,9 +147,9 @@ object QuestionnaireController {
     }
 
     fun getCurrentEvent(): Int {
-        if (currentIndex == 0 && currentQuestion == null && !questions.isEmpty()) {
+        if (currentIndex < 1 && currentQuestion == null && !questions.isEmpty()) {
             return EVENT_BEGINNING_QUESTIONNAIRE
-        } else if (currentIndex > 0 && currentQuestion != null) {
+        } else if (currentIndex > -1 && currentQuestion != null) {
             return EVENT_QUESTION
         } else if (currentIndex > 0 && currentQuestion == null) {
             return EVENT_END_QUESTIONNAIRE
