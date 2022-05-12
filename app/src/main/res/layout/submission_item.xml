@@ -23,7 +23,7 @@
                 android:id="@+id/submission_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:textSize="20sp"
                 android:text="@{submission.submissionName}"
                 app:layout_constraintEnd_toEndOf="parent"

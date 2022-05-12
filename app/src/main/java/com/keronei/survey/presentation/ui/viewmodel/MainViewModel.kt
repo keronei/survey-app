@@ -28,6 +28,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,10 +42,12 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
 
     private val questionnaires: MutableStateFlow<ViewState> = MutableStateFlow(value = ViewState.Empty)
 
+    val questionnaireStateFlow: StateFlow<ViewState> = questionnaires
+
     var selectedQuestionnaireToFill: QuestionnaireDef? = null
         private set
 
-    fun getAvailableQuestionnaires(): Flow<ViewState> {
+    fun getAvailableQuestionnaires(){
         viewModelScope.launch {
             questionnaireRepository.getQuestionnaires().collect { list ->
                 when (list) {
@@ -71,7 +74,6 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
             }
         }
 
-        return questionnaires
     }
 
     fun setSelectedQuestionnaire(selectedQuestionnaire: QuestionnaireDef) {

@@ -24,10 +24,7 @@ import com.keronei.survey.domain.models.QuestionnaireDef
 import com.keronei.survey.domain.repositories.QuestionnaireRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -56,32 +53,43 @@ class QuestionnairesRepoImpl @Inject constructor(
                 mapper.mapList(list)
             }
 
-            local.collect { qns ->
-                if (qns.isEmpty()) {
-                    remoteDataSource.getQuestionnaire().collect { remoteResult ->
-                        when (remoteResult) {
-                            is Resource.Failure -> {
-                                trySend(Resource.Failure(remoteResult.exception))
-                            }
-                            Resource.Loading -> {
-                                trySend(Resource.Loading)
-                            }
-                            is Resource.Success -> {
-                                val data = remoteResult.data
+            val availableLocally = local.first()
 
-                                val forSaving =
-                                    QuestionnaireResponseToQuestionnaireDtoMapper().map(data)
+            if (availableLocally.isEmpty()) {
+                remoteDataSource.getQuestionnaire().collect { remoteResult ->
+                    when (remoteResult) {
+                        is Resource.Failure -> {
+                            trySend(Resource.Failure(remoteResult.exception))
+                        }
+                        Resource.Loading -> {
+                            trySend(Resource.Loading)
+                        }
+                        is Resource.Success -> {
+                            val data = remoteResult.data
 
-                                localDataSource.addQuestionnaire(
-                                    forSaving
-                                )
+                            val forSaving =
+                                QuestionnaireResponseToQuestionnaireDtoMapper().map(data)
+
+                            localDataSource.addQuestionnaire(
+                                forSaving
+                            )
+
+                            val def = localDataSource.getQuestionnaires()
+
+                            val updatedLocal = def.map { list ->
+                                mapper.mapList(list)
                             }
+
+                            // offer from local
+                            trySend(Resource.Success(updatedLocal.first()))
                         }
                     }
-                } else {
-                    trySend(Resource.Success(qns))
                 }
+            } else {
+                trySend(Resource.Success(availableLocally))
             }
+
+
             awaitClose { close() }
         }
 }

@@ -22,7 +22,7 @@
                 android:id="@+id/questionnaire_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:textSize="20sp"
                 android:text="@{questionnaire.id}"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -41,6 +41,8 @@ class RemoteDataSource @Inject constructor(private val apiService: QuerySurveysA
                     trySend(Resource.Failure(Exception("Questionnaire data is null.")))
                 }
             }
+        } catch (noNetwork: java.net.UnknownHostException) {
+            trySend(Resource.Failure(Exception("Check your internet connection and try again.")))
         } catch (e: IOException) {
             trySend(Resource.Failure(e))
             Timber.e(e)
