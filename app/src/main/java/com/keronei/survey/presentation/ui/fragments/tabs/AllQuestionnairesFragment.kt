@@ -35,6 +35,7 @@ import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 class AllQuestionnairesFragment : Fragment() {

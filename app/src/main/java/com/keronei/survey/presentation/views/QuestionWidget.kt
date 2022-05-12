@@ -20,36 +20,51 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
+import com.keronei.survey.R
 import com.keronei.survey.core.AnswerData
 import com.keronei.survey.databinding.QuestionWidgetBinding
 import com.keronei.survey.domain.models.QuestionDefinition
 
-abstract class QuestionWidget(context: Context, private val questionDefinition: QuestionDefinition) :
+abstract class QuestionWidget(
+    context: Context,
+    private val questionDefinition: QuestionDefinition
+) :
     FrameLayout(context) {
 
     private var containerView: ViewGroup
 
-    private var questionWidgetBinding: QuestionWidgetBinding = QuestionWidgetBinding.bind(this)
-
     init {
-        containerView = questionWidgetBinding.answerContainer
+        id = generateViewId()
+
+        containerView = inflate(
+            context,
+            R.layout.question_widget,
+            this
+        ).findViewById(R.id.question_widget_container)
+
+        setQuestionLabel()
+
     }
 
     abstract fun getAnswer(): AnswerData?
 
     abstract fun saveCurrentAnswer(): Boolean
 
-    fun setQuestionLabel() {
+    private fun setQuestionLabel() {
+        val questionText: TextView = findViewById(R.id.question_label)
+        questionText.text = questionDefinition.questionText
     }
 
     fun getQuestionDefinition() = questionDefinition
 
     fun addAnswerView(view: View) {
-        val answerView = questionWidgetBinding.answerContainer
+        val answerView: ViewGroup =
+            findViewById(R.id.answer_container)//questionWidgetBinding.answerContainer
 
         val params = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE)

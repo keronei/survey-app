@@ -20,4 +20,6 @@
     <string name="retake_picture">Retake Picture</string>
     <string name="cannot_open_submissions">Couldn\'t view submissions.</string>
     <string name="loading_submissions">Waiting for submissions...</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 </resources>
