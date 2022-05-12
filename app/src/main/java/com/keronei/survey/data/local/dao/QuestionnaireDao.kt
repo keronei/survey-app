@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface QuestionnaireDao {
     @Query("INSERT INTO QuestionnaireDefDTO(id, language, questions, startQuestionId) values(:id, :language, :questions, :startQuestionId)")
-    fun addQuestionnaire(
+    suspend fun addQuestionnaire(
         id: String,
         language: String,
         questions: List<QuestionDefDTO>,
@@ -46,5 +46,5 @@ interface QuestionnaireDao {
     fun getQuestionnaireById(id: String): Flow<QuestionnaireSubDTO>
 
     @Delete
-    fun deleteQuestionnaire(questionnaireDefDTO: QuestionnaireDefDTO): Int
+    suspend fun deleteQuestionnaire(questionnaireDefDTO: QuestionnaireDefDTO): Int
 }

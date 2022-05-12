@@ -24,7 +24,7 @@ interface SubmissionsRepository {
 
     suspend fun submitCurrentResponses()
 
-    fun saveQuestionnaireResponse(
+    suspend fun saveQuestionnaireResponse(
         questionnaireId: String,
         submissionName: String,
         answers: List<AnswerData>

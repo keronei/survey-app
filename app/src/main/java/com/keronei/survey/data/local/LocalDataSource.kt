@@ -31,21 +31,21 @@ class LocalDataSource @Inject constructor(
 
     fun getQuestionnaireById(id: String) = questionnaireDao.getQuestionnaireById(id)
 
-    fun addQuestionnaire(
+    suspend fun addQuestionnaire(
         id: String,
         language: String,
         questions: List<QuestionDefDTO>,
         startQuestion: String
     ) = questionnaireDao.addQuestionnaire(id, language, questions, startQuestion)
 
-    fun deleteQuestionnaire(questionnaireDefDTO: QuestionnaireDefDTO) =
+    suspend fun deleteQuestionnaire(questionnaireDefDTO: QuestionnaireDefDTO) =
         questionnaireDao.deleteQuestionnaire(questionnaireDefDTO)
 
     fun getSubmissions() = submissionsDao.getSubmissions()
 
-    fun createSubmission(submissionsDTO: SubmissionsDTO) =
+    suspend fun createSubmission(submissionsDTO: SubmissionsDTO) =
         submissionsDao.addSubmission(submissionsDTO)
 
-    fun markAsSynced(submissionsDTOUpdate: SubmissionsDTOUpdate) =
+    suspend fun markAsSynced(submissionsDTOUpdate: SubmissionsDTOUpdate) =
         submissionsDao.markSubmissionAsSynced(submissionsDTOUpdate)
 }

@@ -27,11 +27,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SubmissionsDao {
     @Insert(onConflict = REPLACE)
-    fun addSubmission(submissionsDTO: SubmissionsDTO): Long
+    suspend fun addSubmission(submissionsDTO: SubmissionsDTO): Long
 
     @Query("SELECT * FROM SubmissionsDTO")
     fun getSubmissions(): Flow<List<SubmissionsDTO>>
 
     @Update(entity = SubmissionsDTO::class) // only update sync status
-    fun markSubmissionAsSynced(submissionsDTOUpdate: SubmissionsDTOUpdate): Int
+    suspend fun markSubmissionAsSynced(submissionsDTOUpdate: SubmissionsDTOUpdate): Int
 }

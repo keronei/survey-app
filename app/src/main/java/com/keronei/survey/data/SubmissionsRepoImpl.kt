@@ -72,7 +72,7 @@ class SubmissionsRepoImpl @Inject constructor(
         }
     }
 
-    override fun saveQuestionnaireResponse(
+    override suspend fun saveQuestionnaireResponse(
         questionnaireId: String,
         submissionName: String,
         answers: List<AnswerData>

@@ -29,7 +29,7 @@ class QuestionnaireDefToPresentationMapper :
             input.id,
             "${input.questions.size} questions.",
             getSubmissionString(input.submissionsCount),
-            parser.format(input.downloadDate)
+            "Added on ${parser.format(input.downloadDate)}"
         )
     }
 
