@@ -15,9 +15,7 @@
  */
 package com.keronei.survey.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Query
+import androidx.room.*
 import com.keronei.survey.data.models.QuestionDefDTO
 import com.keronei.survey.data.models.QuestionnaireDefDTO
 import com.keronei.survey.data.models.QuestionnaireSubDTO
@@ -25,24 +23,23 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface QuestionnaireDao {
-    @Query("INSERT INTO QuestionnaireDefDTO(id, language, questions, startQuestionId) values(:id, :language, :questions, :startQuestionId)")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addQuestionnaire(
-        id: String,
-        language: String,
-        questions: List<QuestionDefDTO>,
-        startQuestionId: String
+        questionnaireDefDTO: QuestionnaireDefDTO
     ): Long
 
     @Query(
         "SELECT * , (SELECT COUNT(*) FROM SubmissionsDTO" +
-            " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
-            " AS submissionsCount FROM QuestionnaireDefDTO"
+                " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
+                " AS submissionsCount FROM QuestionnaireDefDTO"
     )
     fun getAllQuestionnaires(): Flow<List<QuestionnaireSubDTO>>
 
-    @Query("SELECT *, (SELECT COUNT(*) FROM SubmissionsDTO"+
-            " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
-            " AS submissionsCount  FROM QuestionnaireDefDTO WHERE id = :id")
+    @Query(
+        "SELECT *, (SELECT COUNT(*) FROM SubmissionsDTO" +
+                " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
+                " AS submissionsCount  FROM QuestionnaireDefDTO WHERE id = :id"
+    )
     fun getQuestionnaireById(id: String): Flow<QuestionnaireSubDTO>
 
     @Delete

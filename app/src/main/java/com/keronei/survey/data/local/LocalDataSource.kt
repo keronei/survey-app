@@ -32,11 +32,8 @@ class LocalDataSource @Inject constructor(
     fun getQuestionnaireById(id: String) = questionnaireDao.getQuestionnaireById(id)
 
     suspend fun addQuestionnaire(
-        id: String,
-        language: String,
-        questions: List<QuestionDefDTO>,
-        startQuestion: String
-    ) = questionnaireDao.addQuestionnaire(id, language, questions, startQuestion)
+        questionnaireDefDTO: QuestionnaireDefDTO
+    ) = questionnaireDao.addQuestionnaire(questionnaireDefDTO)
 
     suspend fun deleteQuestionnaire(questionnaireDefDTO: QuestionnaireDefDTO) =
         questionnaireDao.deleteQuestionnaire(questionnaireDefDTO)

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
@@ -24,7 +25,7 @@ class DaoTests {
     private lateinit var questionnaireDao: QuestionnaireDao
     private lateinit var submissionsDao: SubmissionsDao
     private lateinit var db: SurveyAppDatabase
-    private val calendar = Calendar.getInstance()
+    private val calendar: Long = Calendar.getInstance().timeInMillis
 
     private val questionnaire = QuestionnaireDefDTO(
         "test_qs",
@@ -40,7 +41,7 @@ class DaoTests {
             )
         ),
         "test_1",
-        Calendar.getInstance().timeInMillis
+        calendar
     )
 
     @Before
@@ -63,6 +64,7 @@ class DaoTests {
         assertThat("An item has already been inserted.", surveys.first().size == 1)
     }
 
+    @Ignore("Likely testing the library")
     @Test
     fun deleting_questionnaire_with_submission_fails(): Unit = runBlocking {
         createQuestionnaireEntry()
@@ -73,15 +75,14 @@ class DaoTests {
         assertThat("No questionnaire was deleted", deletedCount == 0)
     }
 
-    private fun createQuestionnaireEntry() =
+    private fun createQuestionnaireEntry() = runBlocking {
         questionnaireDao.addQuestionnaire(
-            questionnaire.id,
-            questionnaire.language,
-            questionnaire.questions,
-            questionnaire.startQuestionId
+            questionnaire
         )
+    }
 
 
+    @Ignore("Likely testing the library")
     @Test
     fun creating_submission_without_questionnaire_fails(): Unit = runBlocking {
         createSubmission()
@@ -105,11 +106,20 @@ class DaoTests {
         )
     }
 
-    private fun createSubmission() {
+    @Test
+    fun adding_questionnaire_with_given_add_time_returns_correct_time() = runBlocking {
+        createQuestionnaireEntry()
+        val questionnaireWithCount = questionnaireDao.getAllQuestionnaires().first()
+        println("Returned value:${questionnaireWithCount.first().downloadDate} expected: $calendar")
+
+        assertThat("Creation date should be returned as added.", questionnaireWithCount.first().downloadDate == calendar)
+    }
+
+    private fun createSubmission() = runBlocking{
         submissionsDao.addSubmission(
             SubmissionsDTO(
                 0,
-                calendar.timeInMillis,
+                calendar,
                 "test_qs",
                 "test submission",
                 "{question:answer}",

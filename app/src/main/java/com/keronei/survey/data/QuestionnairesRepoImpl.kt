@@ -73,10 +73,7 @@ class QuestionnairesRepoImpl @Inject constructor(
                                     QuestionnaireResponseToQuestionnaireDtoMapper().map(data)
 
                                 localDataSource.addQuestionnaire(
-                                    forSaving.id,
-                                    forSaving.language,
-                                    forSaving.questions,
-                                    forSaving.startQuestionId
+                                    forSaving
                                 )
                             }
                         }
