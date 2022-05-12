@@ -23,6 +23,7 @@ class QuestionnaireDefDtoToQuestionnaireDefMapper : Mapper<QuestionnaireSubDTO, 
     override fun map(input: QuestionnaireSubDTO): QuestionnaireDef {
         return QuestionnaireDef(
             input.id,
+            input.startQuestionId,
             input.language,
             QuestionDefDtoToQuestionDefinition().mapList(input.questions),
             Date(input.downloadDate),

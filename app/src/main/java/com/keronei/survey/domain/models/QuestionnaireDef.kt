@@ -19,6 +19,7 @@ import java.util.*
 
 data class QuestionnaireDef(
     val id: String,
+    val startQuestion: String,
     val language: String,
     val questions: List<QuestionDefinition>,
     val downloadDate: Date,

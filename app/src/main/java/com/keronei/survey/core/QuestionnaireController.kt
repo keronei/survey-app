@@ -34,12 +34,17 @@ object QuestionnaireController {
 
     const val UNKNOWN_EVENT = 5
 
-    private val questions = LinkedList<QuestionDefinition>()
+    private var questions = LinkedList<QuestionDefinition>()
     private var currentIndex = 0
     private var currentQuestion: EventNode<QuestionDefinition>? = null
     private val responses = mutableMapOf<String, AnswerData>()
 
     fun setupController(questionnaireDef: QuestionnaireDef) {
+        //clear previous config
+        questions = LinkedList()
+        responses.clear()
+        currentIndex = -1
+        currentQuestion = null
         // hack to add image capture in the end
         // section
         val mutableListOfQuestion = mutableListOf<QuestionDefinition>()
@@ -76,56 +81,39 @@ object QuestionnaireController {
         mutableListOfQuestion.addAll(additions)
         // end section
 
-        attachPreceding(mutableListOfQuestion, questions, "")
+        attachPreceding(mutableListOfQuestion, questions, questionnaireDef.startQuestion)
         currentQuestion = questions.eventNodeAt(0)
     }
 
     private fun attachPreceding(
         list: MutableList<QuestionDefinition>,
         linkedList: LinkedList<QuestionDefinition>,
-        parent: String
+        next: String?
     ): LinkedList<QuestionDefinition> {
-        println("Called list: ${list.size} ")
 
-        if (parent == "") {
+        if (next == null) {
             // last-born node
             val item = list.firstOrNull { node -> node.nextQuestion == null }
             if (item != null) {
-                return if (list.size == 1) {
-                    questions.push(item)
-                    println("Remaining with ${list.first().questionText}// in empty parent")
-
-                    linkedList
-                } else {
-
-                    //questions.push(item)
-                    list.remove(item)
-
-                    questions.push(item)
-
-                    println("Removed -> ${item.questionText}// in empty parent")
-
-                    attachPreceding(list, linkedList, item.id)
+                if (list.size == 1) {
+                    questions.append(item)
+                    return linkedList
                 }
             }
         } else {
             // previous id points to next of current qsn
-            val item = list.firstOrNull { item -> item.nextQuestion == parent }
+            val item = list.firstOrNull { item -> item.id == next }// first parent
 
             if (item != null) {
                 return if (list.size == 1) {
-                    println("Remaining with ${list.first().questionText}// in $parent as parent :: The end")
-                    questions.push(list.first())
-
+                    questions.append(list.first())
                     linkedList
                 } else {
                     list.remove(item)
 
-                    questions.push(item)
+                    questions.append(item)
 
-                    println("Removed -> ${item.questionText}// in $parent as parent and proceeding with next qsn-> ${item.id}.")
-
-                    attachPreceding(list, linkedList, item.id)
+                    attachPreceding(list, linkedList, item.nextQuestion)
                 }
 
             }
@@ -138,23 +126,23 @@ object QuestionnaireController {
     fun getCurrentQuestion() = currentQuestion?.value
 
     fun getNextQuestion(): QuestionDefinition? {
-        currentQuestion = if (currentIndex == 0) {
-            currentIndex++
-            questions.eventNodeAt(0)
+        if (currentIndex == -1) {// first time call
+            currentIndex += 1
+            currentQuestion = questions.eventNodeAt(0)
         } else {
-            currentIndex++
-            currentQuestion?.next
+            currentQuestion = currentQuestion?.next
+            currentIndex += 1
         }
         return currentQuestion?.value
     }
 
     fun getPreviousQuestion(): QuestionDefinition? {
-        if (currentIndex == 0) {
+        if (currentIndex < 1) {
             return null
         }
-        currentIndex--
-        currentQuestion = questions.eventNodeAt(currentIndex)
 
+        currentIndex -= 1
+        currentQuestion = questions.eventNodeAt(currentIndex)
         return currentQuestion?.value
     }
 
