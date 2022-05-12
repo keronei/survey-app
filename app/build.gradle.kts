@@ -86,9 +86,6 @@ android {
         implementation(Libraries.coroutines)
         implementation(Libraries.coroutinesAndroid)
 
-        //easy permissions
-        implementation(Libraries.easyPermissions)
-
         // Work
         implementation(Libraries.work)
         implementation(Libraries.hiltWork)

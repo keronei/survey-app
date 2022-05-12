@@ -18,13 +18,20 @@ package com.keronei.survey.core
 import android.app.Activity
 import android.content.Context
 import com.keronei.survey.domain.models.QuestionDefinition
+import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import com.keronei.survey.presentation.views.QuestionWidget
 import com.keronei.survey.presentation.views.widgets.FloatWidget
 import com.keronei.survey.presentation.views.widgets.ImageCaptureWidget
 import com.keronei.survey.presentation.views.widgets.SelectSingleWidget
 import com.keronei.survey.presentation.views.widgets.SingleLineStringWidget
+import kotlinx.coroutines.CoroutineScope
 
-class WidgetFactory(private val context: Context, private val activity: Activity) {
+class WidgetFactory(
+    private val context: Context,
+    private val activity: Activity,
+    private val scope: CoroutineScope,
+    private val helperViewModel: QuestionsHelperViewModel
+) {
     fun createWidgetForQuestion(questionDefinition: QuestionDefinition): QuestionWidget {
         return when (questionDefinition.questionType) {
             QuestionType.FREE_TEXT -> {
@@ -35,7 +42,7 @@ class WidgetFactory(private val context: Context, private val activity: Activity
                 stringWidget(questionDefinition)
             }
             QuestionType.IMAGE_CAPTURE -> {
-                ImageCaptureWidget(activity, context, questionDefinition)
+                ImageCaptureWidget(activity, context, questionDefinition, helperViewModel, scope)
             }
         }
     }
@@ -44,6 +51,12 @@ class WidgetFactory(private val context: Context, private val activity: Activity
         when (questionDefinition.answerType) {
             AnswerType.SINGLE_LINE_TEXT -> SingleLineStringWidget(context, questionDefinition)
             AnswerType.FLOAT -> FloatWidget(context, questionDefinition)
-            AnswerType.IMAGE_PATH -> ImageCaptureWidget(activity, context, questionDefinition)
+            AnswerType.IMAGE_PATH -> ImageCaptureWidget(
+                activity,
+                context,
+                questionDefinition,
+                helperViewModel,
+                scope
+            )
         }
 }

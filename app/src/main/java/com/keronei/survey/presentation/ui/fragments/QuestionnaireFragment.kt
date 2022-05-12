@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.keronei.survey.R
 import com.keronei.survey.core.QuestionnaireController.EVENT_BEGINNING_QUESTIONNAIRE
 import com.keronei.survey.core.QuestionnaireController.EVENT_END_QUESTIONNAIRE
@@ -31,6 +32,7 @@ import com.keronei.survey.core.QuestionnaireController.UNKNOWN_EVENT
 import com.keronei.survey.core.WidgetFactory
 import com.keronei.survey.databinding.FragmentQuestionnaireBinding
 import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
+import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import com.keronei.survey.presentation.views.QuestionWidget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +44,8 @@ class QuestionnaireFragment : Fragment() {
     private lateinit var fragmentQuestionnaireBinding: FragmentQuestionnaireBinding
 
     private val mainViewModel: MainViewModel by activityViewModels()
+
+    private val helperViewModel: QuestionsHelperViewModel by activityViewModels()
 
     private lateinit var widgetFactory: WidgetFactory
 
@@ -61,7 +65,7 @@ class QuestionnaireFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        widgetFactory = WidgetFactory(requireContext(), requireActivity())
+        widgetFactory = WidgetFactory(requireContext(), requireActivity(), lifecycleScope, helperViewModel)
         // On start, the user is starting a questionnaire and is in Q1
         val initialQuestion = mainViewModel.nextQuestion()
 

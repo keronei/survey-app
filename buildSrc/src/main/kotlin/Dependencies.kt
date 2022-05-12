@@ -46,8 +46,6 @@ object Versions {
     // Coroutines
     const val coroutines = "1.3.9"
 
-    const val easyPermission = "3.0.0"
-
     // Gradle Plugins
     const val ktlint = "10.2.1"
     const val detekt = "1.19.0"
@@ -124,8 +122,6 @@ object Libraries {
     const val work = "androidx.work:work-runtime-ktx:${Versions.work}"
     const val hiltWork = "androidx.hilt:hilt-work:${Versions.hilt_compiler}"
     const val multiProcessWorkManager = "androidx.work:work-multiprocess:${Versions.work}"
-
-    const val easyPermissions = "pub.devrel:easypermissions:${Versions.easyPermission}"
 }
 
 object TestLibraries {

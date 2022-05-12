@@ -15,22 +15,32 @@
  */
 package com.keronei.survey
 
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
+import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
+import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.EasyPermissions
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 
 /**
  *  Main Activity which is the Launcher Activity
  */
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private val helperViewModel: QuestionsHelperViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,12 +77,23 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data")
+
+            Timber.d("Result -> ${data?.extras}")
+
+            if (imageBitmap != null) {
+                helperViewModel.setBitmap(imageBitmap as Bitmap)
+            } else {
+                Toast.makeText(this, "Image was null.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Capture was not successful.", Toast.LENGTH_SHORT).show()
+        }
+
     }
+
 }

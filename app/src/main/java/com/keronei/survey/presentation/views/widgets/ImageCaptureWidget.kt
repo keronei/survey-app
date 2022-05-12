@@ -1,6 +1,5 @@
 package com.keronei.survey.presentation.views.widgets
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -11,7 +10,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.FileProvider
@@ -19,11 +17,13 @@ import com.google.android.material.button.MaterialButton
 import com.keronei.survey.R
 import com.keronei.survey.core.AnswerData
 import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
-import com.keronei.survey.core.Constants.REQUEST_STORAGE_PERMISSION
-import com.keronei.survey.databinding.ImageWidgetBinding
 import com.keronei.survey.domain.models.QuestionDefinition
+import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import com.keronei.survey.presentation.views.QuestionWidget
-import pub.devrel.easypermissions.EasyPermissions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -33,7 +33,9 @@ import java.util.*
 class ImageCaptureWidget(
     private val activity: Activity,
     context: Context,
-    questionDetails: QuestionDefinition
+    questionDetails: QuestionDefinition,
+    helperViewModel: QuestionsHelperViewModel,
+    scope: CoroutineScope
 ) : QuestionWidget(context, questionDetails) {
     lateinit var currentPhotoPath: String
 
@@ -41,6 +43,20 @@ class ImageCaptureWidget(
 
     init {
         setupLayout()
+        scope.launch {
+            helperViewModel.imageWaitingState.collect { bitmap ->
+                // display the image
+                val imageView: ImageView = layout.findViewById(R.id.image_preview)
+
+                if (bitmap != null) {
+                    imageView.setImageBitmap(bitmap)
+
+                    val captureBtn = layout.findViewById<MaterialButton>(R.id.btn_capture)
+
+                    captureBtn.text = context.getString(R.string.retake_picture)
+                }
+            }
+        }
     }
 
     override fun getAnswer(): AnswerData? {
@@ -95,49 +111,34 @@ class ImageCaptureWidget(
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
-            EasyPermissions.requestPermissions(
-                activity,
-                "Need to store the image.",
-                REQUEST_STORAGE_PERMISSION
-            )
 
-            if (EasyPermissions.hasPermissions(
-                    context,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            ) {
-                takePictureIntent.resolveActivity(context.packageManager)?.also {
-                    // Create the File where the photo should go
-                    val photoFile: File? = try {
-                        createImageFile()
-                    } catch (ex: IOException) {
-                        // Error occurred while creating the File
+            takePictureIntent.resolveActivity(context.packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    ex.printStackTrace()
+                    null
+                }
 
-                        null
-                    }
-                    // Continue only if the File was successfully created
-                    photoFile?.also {
+                Timber.d("Image result from creation: $photoFile")
+                // Continue only if the File was successfully created
+                photoFile?.also {
 
-                        // display the image
-                        val bitmap = BitmapFactory.decodeFile(it.absolutePath)
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        context,
+                        "com.keronei.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
 
-                        val imageView: ImageView = layout.findViewById(R.id.image_preview)
-
-                        imageView.setImageBitmap(bitmap)
-
-                        val photoURI: Uri = FileProvider.getUriForFile(
-                            context,
-                            "com.example.android.fileprovider",
-                            it
-                        )
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        startActivityForResult(
-                            activity,
-                            takePictureIntent,
-                            REQUEST_IMAGE_CAPTURE,
-                            Bundle()
-                        )
-                    }
+                    startActivityForResult(
+                        activity,
+                        takePictureIntent,
+                        REQUEST_IMAGE_CAPTURE,
+                        Bundle()
+                    )
                 }
             }
         }
