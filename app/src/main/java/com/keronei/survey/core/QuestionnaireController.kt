@@ -157,6 +157,17 @@ object QuestionnaireController {
         return UNKNOWN_EVENT
     }
 
+    fun getNextEvent(): Int {
+        val nextIndex = currentIndex + 1
+        val whatsNext = questions.eventNodeAt(nextIndex)
+
+        return if (whatsNext == null) {
+            EVENT_END_QUESTIONNAIRE
+        } else {
+            EVENT_QUESTION
+        }
+    }
+
     fun saveQuestionResponse(questionDefinition: QuestionDefinition) {
         responses[questionDefinition.id] = questionDefinition.answerData!!
     }

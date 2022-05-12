@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Survey App</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login">Login</string>
     <string name="phone_number">Phone Number</string>
     <string name="password">Password</string>
@@ -15,11 +13,11 @@
     <string name="finish">Finish</string>
     <string name="no_questionnaire">No Questionnaires on your device.</string>
     <string name="you_have_no_submissions_n_download_and_select_a_questionnaire_to_start_filling">You have no submissions. \n Download and select a questionnaire to start filling.</string>
-    <string name="loading">Getting questionnaires...</string>
-    <string name="take_picture">Take Picture</string>
+    <string name="loading">Getting questionnaires…</string>
+    <string name="take_picture">Open Camera</string>
     <string name="retake_picture">Retake Picture</string>
-    <string name="cannot_open_submissions">Couldn\'t view submissions.</string>
-    <string name="loading_submissions">Waiting for submissions...</string>
+    <string name="cannot_open_submissions">Could\'t view submissions.</string>
+    <string name="loading_submissions">Waiting for submissions…</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="image_preview_window">Image preview window</string>

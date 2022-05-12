@@ -91,6 +91,8 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
 
     fun getCurrentEvent() = currentQuestionnaireController.getCurrentEvent()
 
+    fun getNextEvent() = currentQuestionnaireController.getNextEvent()
+
     fun saveCurrentAnswer(questionDefinition: QuestionDefinition) =
         currentQuestionnaireController.saveQuestionResponse(questionDefinition)
 

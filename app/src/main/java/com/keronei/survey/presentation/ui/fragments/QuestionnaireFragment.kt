@@ -89,6 +89,8 @@ class QuestionnaireFragment : Fragment() {
 
             val currentQuestion = mainViewModel.nextQuestion()
 
+            anticipateFinish()
+
             if (currentEvent != EVENT_QUESTION) {
                 Toast.makeText(context, "Event is not pointing to a question.", Toast.LENGTH_SHORT)
                     .show()
@@ -98,22 +100,19 @@ class QuestionnaireFragment : Fragment() {
                     val widgetToDisplay = widgetFactory.createWidgetForQuestion(currentQuestion)
 
                     showQuestionView(widgetToDisplay)
-                }else{
+                } else {
                     Toast.makeText(context, "Question is empty.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         fragmentQuestionnaireBinding.btnBack.setOnClickListener {
-//            val answerOk = validateCurrentAnswer()
-//
-//            if (!answerOk) {
-//                return@setOnClickListener
-//            }
-
             val previousQuestion = mainViewModel.previousQuestion()
 
             val currentEvent = mainViewModel.getCurrentEvent()
+
+            anticipateFinish()
+
             if (currentEvent != EVENT_QUESTION) {
                 handleEvent(currentEvent)
             } else {
@@ -122,6 +121,16 @@ class QuestionnaireFragment : Fragment() {
                     showQuestionView(question)
                 }
             }
+        }
+    }
+
+    private fun anticipateFinish() {
+        val nextEvent = mainViewModel.getNextEvent()
+
+        if (nextEvent == EVENT_END_QUESTIONNAIRE) {
+            fragmentQuestionnaireBinding.btnNext.text = getString(R.string.finish)
+        } else {
+            fragmentQuestionnaireBinding.btnNext.text = getString(R.string.next)
         }
     }
 
