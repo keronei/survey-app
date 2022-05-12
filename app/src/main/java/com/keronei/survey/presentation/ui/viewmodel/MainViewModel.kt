@@ -45,6 +45,8 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
 
     val questionnaireStateFlow: StateFlow<ViewState> = questionnaires
 
+    private val allQuestionnaires = mutableListOf<QuestionnaireDef>()
+
     var selectedQuestionnaireToFill: QuestionnaireDef? = null
         private set
 
@@ -62,6 +64,9 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
                         if (list.data.isEmpty()) {
                             questionnaires.emit(ViewState.Empty)
                         } else {
+                            allQuestionnaires.clear()
+
+                            allQuestionnaires.addAll(list.data)
                             questionnaires.emit(
                                 ViewState.Success(
                                     QuestionnaireDefToPresentationMapper().mapList(
@@ -77,9 +82,12 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
 
     }
 
-    fun setSelectedQuestionnaire(selectedQuestionnaire: QuestionnaireDef) {
-        currentQuestionnaireController.setupController(selectedQuestionnaire)
-        selectedQuestionnaireToFill = selectedQuestionnaire
+    fun setSelectedQuestionnaire(selectedQuestionnaireId: String) {
+        val selection = allQuestionnaires.firstOrNull { item -> item.id == selectedQuestionnaireId }
+        if (selection != null) {
+            currentQuestionnaireController.setupController(selection)
+            selectedQuestionnaireToFill = selection
+        }
     }
 
     fun getCurrentQuestion() = currentQuestionnaireController.getCurrentQuestion()

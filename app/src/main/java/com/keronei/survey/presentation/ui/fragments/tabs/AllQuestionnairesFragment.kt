@@ -32,9 +32,11 @@ import com.keronei.survey.core.ViewState
 import com.keronei.survey.databinding.AllQuestionnairesFragmentBinding
 import com.keronei.survey.presentation.ui.QuestionnairesRecyclerAdapter
 import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
@@ -65,22 +67,23 @@ class AllQuestionnairesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         allQuestionnairesRecyclerAdapter = QuestionnairesRecyclerAdapter({ item ->
-            lifecycleScope.launchWhenResumed {
-                mainViewModel.getQuestionnaireById(item.id).collect { selected ->
-                    // If it's in the list, it cannot be empty
-                    mainViewModel.setSelectedQuestionnaire(
-                        selected
-                    )
-                }
 
+            // If it's in the list, it cannot be empty
+            mainViewModel.setSelectedQuestionnaire(
+                item.id
+            )
 
-            }
             if (mainViewModel.selectedQuestionnaireToFill != null) {
                 findNavController().navigate(R.id.action_homeFragment_to_questionnaireFragment)
             } else {
-                Toast.makeText(requireContext(), "Couldn't open ${item.id}", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    requireContext(),
+                    "Couldn't open ${item.id}",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
+
         }, requireContext())
 
         setupRecycler()
