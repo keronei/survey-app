@@ -10,8 +10,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.FileProvider
+import com.google.android.material.button.MaterialButton
 import com.keronei.survey.R
 import com.keronei.survey.core.AnswerData
 import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
@@ -33,7 +37,7 @@ class ImageCaptureWidget(
 ) : QuestionWidget(context, questionDetails) {
     lateinit var currentPhotoPath: String
 
-    lateinit var layout: ImageWidgetBinding
+    lateinit var layout: View
 
     init {
         setupLayout()
@@ -54,20 +58,22 @@ class ImageCaptureWidget(
     }
 
     private fun setupLayout() {
-        layout = ImageWidgetBinding.bind(this)
+        layout = inflate(context, R.layout.image_widget, null)
 
-        layout.btnCapture.setOnClickListener {
+        val captureBtn = layout.findViewById<MaterialButton>(R.id.btn_capture)
+
+        captureBtn.setOnClickListener {
             if (this::currentPhotoPath.isInitialized) {
-                layout.btnCapture.text = context.getString(R.string.retake_picture)
+                captureBtn.text = context.getString(R.string.retake_picture)
             } else {
-                layout.btnCapture.text = context.getString(R.string.take_picture)
+                captureBtn.text = context.getString(R.string.take_picture)
 
             }
 
             dispatchTakePictureIntent()
         }
 
-        addAnswerView(layout.root)
+        addAnswerView(layout)
     }
 
     @Throws(IOException::class)
@@ -115,7 +121,9 @@ class ImageCaptureWidget(
                         // display the image
                         val bitmap = BitmapFactory.decodeFile(it.absolutePath)
 
-                        layout.imagePreview.setImageBitmap(bitmap)
+                        val imageView: ImageView = layout.findViewById(R.id.image_preview)
+
+                        imageView.setImageBitmap(bitmap)
 
                         val photoURI: Uri = FileProvider.getUriForFile(
                             context,

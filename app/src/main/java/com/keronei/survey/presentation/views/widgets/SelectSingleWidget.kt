@@ -20,8 +20,8 @@ import android.content.Context
 import android.view.View
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import com.keronei.survey.R
 import com.keronei.survey.core.AnswerData
-import com.keronei.survey.databinding.SelectOneWidgetBinding
 import com.keronei.survey.domain.models.QuestionDefinition
 import com.keronei.survey.presentation.views.QuestionWidget
 
@@ -29,8 +29,6 @@ import com.keronei.survey.presentation.views.QuestionWidget
 class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinition) :
     QuestionWidget(context, questionDefinition) {
     private lateinit var radioGroup: RadioGroup
-    private val selectSingleWidgetBinding: SelectOneWidgetBinding =
-        SelectOneWidgetBinding.bind(this)
 
     private val cacheSelector = mutableMapOf<Int, String>()
 
@@ -44,7 +42,8 @@ class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinitio
     }
 
     private fun getAnswerField(): View {
-        radioGroup = selectSingleWidgetBinding.radioGroup
+        val view: View = inflate(context, R.layout.select_one_widget, null)
+        radioGroup = view.findViewById(R.id.radio_group)
 
         val questionDetails = getQuestionDefinition()
 
@@ -62,7 +61,7 @@ class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinitio
             radioGroup.addView(radioButton)
         }
 
-        return radioGroup
+        return view
     }
 
     override fun getAnswer(): AnswerData? {

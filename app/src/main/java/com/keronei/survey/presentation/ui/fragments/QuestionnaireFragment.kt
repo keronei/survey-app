@@ -63,15 +63,15 @@ class QuestionnaireFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         widgetFactory = WidgetFactory(requireContext(), requireActivity())
         // On start, the user is starting a questionnaire and is in Q1
-        val initialQuestion = mainViewModel.getCurrentQuestion()
+        val initialQuestion = mainViewModel.nextQuestion()
 
         if (initialQuestion != null) {
 
             val questionView = widgetFactory.createWidgetForQuestion(initialQuestion)
 
-            fragmentQuestionnaireBinding.questionHolder.addView(questionView)
-
-            currentQuestionOnDisplay = questionView
+            showQuestionView(questionView)
+        } else {
+            Toast.makeText(context, "First question is empty.", Toast.LENGTH_SHORT).show()
         }
 
         handleNavigationButtonsClick()
@@ -90,22 +90,26 @@ class QuestionnaireFragment : Fragment() {
             val currentQuestion = mainViewModel.nextQuestion()
 
             if (currentEvent != EVENT_QUESTION) {
+                Toast.makeText(context, "Event is not pointing to a question.", Toast.LENGTH_SHORT)
+                    .show()
                 handleEvent(currentEvent)
             } else {
                 if (currentQuestion != null) {
                     val widgetToDisplay = widgetFactory.createWidgetForQuestion(currentQuestion)
 
                     showQuestionView(widgetToDisplay)
+                }else{
+                    Toast.makeText(context, "Question is empty.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         fragmentQuestionnaireBinding.btnBack.setOnClickListener {
-            val answerOk = validateCurrentAnswer()
-
-            if (!answerOk) {
-                return@setOnClickListener
-            }
+//            val answerOk = validateCurrentAnswer()
+//
+//            if (!answerOk) {
+//                return@setOnClickListener
+//            }
 
             val previousQuestion = mainViewModel.previousQuestion()
 
