@@ -20,9 +20,8 @@ import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
 import com.keronei.survey.domain.models.QuestionDefinition
 import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import com.keronei.survey.presentation.views.QuestionWidget
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -35,23 +34,20 @@ class ImageCaptureWidget(
     context: Context,
     questionDetails: QuestionDefinition,
     helperViewModel: QuestionsHelperViewModel,
-    scope: CoroutineScope
+    private val scope: CoroutineScope
 ) : QuestionWidget(context, questionDetails) {
-    lateinit var currentPhotoPath: String
+    private lateinit var currentPhotoPath: String
 
     lateinit var layout: View
 
     lateinit var imageView: ImageView
 
-    lateinit var captureBtn: MaterialButton
+    private lateinit var captureBtn: MaterialButton
 
     init {
         setupLayout()
         scope.launch {
             helperViewModel.imageWaitingState.collect { bitmap ->
-                // display the image
-
-
                 if (bitmap != null && this@ImageCaptureWidget::currentPhotoPath.isInitialized) {
                     try {
                         // set this as current answer because next button is finish and user might go back.
@@ -69,8 +65,13 @@ class ImageCaptureWidget(
     }
 
     private fun setPictureInPreview() {
-        val presetBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-        imageView.setImageBitmap(presetBitmap)
+        scope.launch(Dispatchers.IO) {
+            val presetBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+            // switch thread.
+            withContext(Dispatchers.Main) {
+                imageView.setImageBitmap(presetBitmap)
+            }
+        }
     }
 
     override fun getAnswer(): AnswerData? {
