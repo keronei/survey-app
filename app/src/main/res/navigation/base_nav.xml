@@ -20,9 +20,9 @@
         <action
             android:id="@+id/action_homeFragment_to_questionnaireFragment"
             app:destination="@id/questionnaireFragment"
-            app:enterAnim="@android:anim/slide_in_left"
+            app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 

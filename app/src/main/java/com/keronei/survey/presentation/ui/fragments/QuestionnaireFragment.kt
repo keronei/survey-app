@@ -102,21 +102,29 @@ class QuestionnaireFragment : Fragment() {
 
             val currentQuestion = mainViewModel.nextQuestion()
 
-            anticipateFinish()
+            val nextEvent = anticipateFinish()
 
-            if (currentEvent != EVENT_QUESTION) {
-                Toast.makeText(context, "Event is not pointing to a question.", Toast.LENGTH_SHORT)
-                    .show()
-                handleEvent(currentEvent)
-            } else {
-                if (currentQuestion != null) {
-                    val widgetToDisplay = widgetFactory.createWidgetForQuestion(currentQuestion)
+            if (nextEvent == EVENT_END_QUESTIONNAIRE) {
+                showCompletionDialog()
+            } else
 
-                    showQuestionView(widgetToDisplay)
+                if (currentEvent != EVENT_QUESTION) {
+                    Toast.makeText(
+                        context,
+                        "Event is not pointing to a question.",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                    handleEvent(currentEvent)
                 } else {
-                    Toast.makeText(context, "Question is empty.", Toast.LENGTH_SHORT).show()
+                    if (currentQuestion != null) {
+                        val widgetToDisplay = widgetFactory.createWidgetForQuestion(currentQuestion)
+
+                        showQuestionView(widgetToDisplay)
+                    } else {
+                        Toast.makeText(context, "Question is empty.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
         }
 
         fragmentQuestionnaireBinding.btnBack.setOnClickListener {
@@ -137,7 +145,7 @@ class QuestionnaireFragment : Fragment() {
         }
     }
 
-    private fun anticipateFinish() {
+    private fun anticipateFinish(): Int {
         val nextEvent = mainViewModel.getNextEvent()
 
         if (nextEvent == EVENT_END_QUESTIONNAIRE) {
@@ -145,6 +153,8 @@ class QuestionnaireFragment : Fragment() {
         } else {
             fragmentQuestionnaireBinding.btnNext.text = getString(R.string.next)
         }
+
+        return nextEvent
     }
 
     private fun showQuestionView(question: QuestionWidget) {
@@ -172,7 +182,7 @@ class QuestionnaireFragment : Fragment() {
             }
 
             EVENT_END_QUESTIONNAIRE -> {
-                showCompletionDialog()
+
             }
 
             UNKNOWN_EVENT -> {
@@ -185,12 +195,6 @@ class QuestionnaireFragment : Fragment() {
             DataBindingUtil.inflate(layoutInflater, R.layout.survey_end_dialog, null, false)
 
         val dialog = MaterialAlertDialogBuilder(requireContext()).setView(view.root).create()
-
-        val params = ConstraintLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-
 
         val questionnaireName =
             mainViewModel.selectedQuestionnaireToFill?.id ?: "Unknown questionnaire."

@@ -24,6 +24,7 @@ import com.keronei.survey.presentation.models.SubmissionPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -36,9 +37,11 @@ class SubmissionsViewModel @Inject constructor(private val submissionsRepository
     private val submissions: MutableStateFlow<SubmissionViewState> =
         MutableStateFlow(value = SubmissionViewState.Empty)
 
+    val submissionsStateFlow: StateFlow<SubmissionViewState> = submissions
+
     private val parser = SimpleDateFormat("dd.MM.yyyy hh:mm a", Locale.US)
 
-    fun getSubmissions(): Flow<SubmissionViewState> {
+    fun getSubmissions() {
         viewModelScope.launch {
             submissionsRepository.getSubmissions().collect { sub ->
                 if (sub.isEmpty()) {
@@ -60,7 +63,6 @@ class SubmissionsViewModel @Inject constructor(private val submissionsRepository
                 }
             }
         }
-        return submissions
     }
 
     fun saveQuestionnaireResponses(id: String, name: String, answers: List<AnswerData>) {
