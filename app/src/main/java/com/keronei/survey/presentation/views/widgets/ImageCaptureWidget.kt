@@ -41,18 +41,22 @@ class ImageCaptureWidget(
 
     lateinit var layout: View
 
+    lateinit var imageView: ImageView
+
+    lateinit var captureBtn: MaterialButton
+
     init {
         setupLayout()
         scope.launch {
             helperViewModel.imageWaitingState.collect { bitmap ->
                 // display the image
-                val imageView: ImageView = layout.findViewById(R.id.image_preview)
+
 
                 if (bitmap != null && this@ImageCaptureWidget::currentPhotoPath.isInitialized) {
                     try {
-                        val presetBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-                        imageView.setImageBitmap(presetBitmap)
-
+                        // set this as current answer because next button is finish and user might go back.
+                        saveCurrentAnswer()
+                        setPictureInPreview()
                     } catch (exception: Exception) {
                         exception.printStackTrace()
                     }
@@ -62,6 +66,11 @@ class ImageCaptureWidget(
                 }
             }
         }
+    }
+
+    private fun setPictureInPreview() {
+        val presetBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+        imageView.setImageBitmap(presetBitmap)
     }
 
     override fun getAnswer(): AnswerData? {
@@ -81,7 +90,9 @@ class ImageCaptureWidget(
     private fun setupLayout() {
         layout = inflate(context, R.layout.image_widget, null)
 
-        val captureBtn = layout.findViewById<MaterialButton>(R.id.btn_capture)
+        captureBtn = layout.findViewById(R.id.btn_capture)
+
+        imageView = layout.findViewById(R.id.image_preview)
 
         captureBtn.setOnClickListener {
             if (this::currentPhotoPath.isInitialized) {
@@ -92,6 +103,15 @@ class ImageCaptureWidget(
             }
 
             dispatchTakePictureIntent()
+        }
+
+        // setup previous answer
+        val previousAnswer = getQuestionDefinition().answerData
+
+        if (previousAnswer != null) {
+            currentPhotoPath = previousAnswer.response
+            setPictureInPreview()
+            captureBtn.text = context.getString(R.string.retake_picture)
         }
 
         addAnswerView(layout)
