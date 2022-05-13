@@ -28,8 +28,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.work.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationBarItemView
 import com.keronei.survey.core.Constants
 import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
 import com.keronei.survey.core.Constants.WORKMAGAER_TAG
@@ -37,6 +41,7 @@ import com.keronei.survey.core.workmanager.SubmissionsWorker
 import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -49,9 +54,13 @@ class MainActivity : AppCompatActivity() {
 
     private val helperViewModel: QuestionsHelperViewModel by viewModels()
 
-    lateinit var workManager: WorkManager
+    private lateinit var workManager: WorkManager
 
     private lateinit var outputWorkInfo: LiveData<List<WorkInfo>>
+
+    private lateinit var controller: NavController
+
+    var redirected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +69,29 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
 
         syncResponsesPeriodically()
+
+        navigateToHomeOrLogin()
+    }
+
+    private fun navigateToHomeOrLogin() {
+
+        val hostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main)
+
+        if (hostFragment != null) {
+            controller = hostFragment.findNavController()
+
+            controller.addOnDestinationChangedListener { controller, destination, arguments ->
+                when (destination.id) {
+                    R.id.homeFragment -> {
+                        if (!redirected) {
+                            controller.navigate(R.id.action_homeFragment_to_loginFragment)
+                            redirected = true
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -74,18 +106,31 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.profile -> {
 
-                MaterialAlertDialogBuilder(this).setMessage("You are currently logged in.")
-                    .setPositiveButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
+                if (this::controller.isInitialized) {
+
+                    val currentDestination = controller.currentDestination
+
+                    if (currentDestination?.id != R.id.loginFragment) {
+
+                        MaterialAlertDialogBuilder(this).setMessage("You are currently logged in.")
+                            .setPositiveButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("Logout") { dialog, _ ->
+                                dialog.dismiss()
+
+                                if (this::controller.isInitialized) {
+                                    redirected = false
+                                    controller.navigate(R.id.action_homeFragment_to_loginFragment)
+                                }
+
+                            }
+                            .setTitle("+254739224261")
+                            .setIcon(R.drawable.ic_baseline_account_circle_24)
+                            .create()
+                            .show()
                     }
-                    .setNegativeButton("Logout") { dialog, _ ->
-                        dialog.dismiss()
-                        Toast.makeText(this, "Remove user account.", Toast.LENGTH_SHORT).show()
-                    }
-                    .setTitle("+254739224261")
-                    .setIcon(R.drawable.ic_baseline_account_circle_24)
-                    .create()
-                    .show()
+                }
             }
         }
 
@@ -140,9 +185,10 @@ class MainActivity : AppCompatActivity() {
 
             val descriptionText = getString(R.string.channel_desc)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(Constants.NOTIFICATION_CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
+            val channel =
+                NotificationChannel(Constants.NOTIFICATION_CHANNEL_ID, name, importance).apply {
+                    description = descriptionText
+                }
             // Register the channel with the system
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

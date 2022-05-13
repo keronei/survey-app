@@ -19,9 +19,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.keronei.survey.R
+import com.keronei.survey.databinding.LoginFragmentBinding
 import com.keronei.survey.presentation.ui.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,9 +33,29 @@ class LoginFragment : Fragment() {
 
     val viewModel: LoginViewModel by activityViewModels()
 
+    private lateinit var loginBinding: LoginFragmentBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.login_fragment, container, false)
+    ): View? {
+
+        loginBinding = DataBindingUtil.inflate(inflater, R.layout.login_fragment, container, false)
+
+        setOnClickListeners()
+
+        return loginBinding.root
+
+    }
+
+    private fun setOnClickListeners() {
+        loginBinding.btnLogin.setOnClickListener {
+            if (loginBinding.phoneNumberInput.text.isNotEmpty()) {
+                if (loginBinding.passwordInput.text.isNotEmpty()) {
+                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                }
+            }
+        }
+    }
 }
