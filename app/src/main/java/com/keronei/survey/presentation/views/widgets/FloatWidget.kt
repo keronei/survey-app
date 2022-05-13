@@ -17,9 +17,13 @@ package com.keronei.survey.presentation.views.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
+import android.text.TextWatcher
 import android.widget.EditText
 import com.keronei.survey.domain.models.QuestionDefinition
+import java.util.regex.Pattern
 
 @SuppressLint("ViewConstructor")
 class FloatWidget(context: Context, questionDefinition: QuestionDefinition) :
@@ -28,6 +32,23 @@ class FloatWidget(context: Context, questionDefinition: QuestionDefinition) :
     override fun getAnswerField(): EditText {
         val editText = super.getAnswerField()
         editText.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL + InputType.TYPE_CLASS_NUMBER
+
+        editText.limitDecimalPlaces(1)
+
         return editText
+    }
+
+    private fun EditText.limitDecimalPlaces(maxDecimalPlaces: Int) {
+        filters += InputFilter { source, _, _, dest, dstart, dend ->
+            val value = if (source.isEmpty()) {
+                dest.removeRange(dstart, dend)
+            } else {
+                StringBuilder(dest).insert(dstart, source)
+            }
+            val matcher =
+                Pattern.compile("([1-9][0-9]*)|([1-9][0-9]*\\.[0-9]{0,$maxDecimalPlaces})|(\\.[0-9]{0,$maxDecimalPlaces})")
+                    .matcher(value)
+            if (!matcher.matches()) "" else null
+        }
     }
 }
