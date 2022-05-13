@@ -98,6 +98,9 @@ class QuestionnaireFragment : Fragment() {
                     val currentEvent = mainViewModel.determineIfAtStart()
 
                     if (currentEvent == EVENT_BEGINNING_QUESTIONNAIRE) {
+
+                        fragmentQuestionnaireBinding.btnBack.isEnabled = false
+
                         MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.back_message))
                             .setPositiveButton("No") { dialog, _ ->
                                 dialog.dismiss()
@@ -109,6 +112,8 @@ class QuestionnaireFragment : Fragment() {
                                     requireActivity().onBackPressed()
                                 }
                             }
+                            .setTitle("Exit")
+                            .setIcon(R.drawable.ic_exit_24)
                             .show()
                     } else {
                         navigateBack()
@@ -135,6 +140,12 @@ class QuestionnaireFragment : Fragment() {
 
         validateCurrentAnswer()
 
+        val isItFirstPage = mainViewModel.determineIfAtStart()
+
+        if (isItFirstPage == EVENT_BEGINNING_QUESTIONNAIRE) {
+            fragmentQuestionnaireBinding.btnBack.isEnabled = false
+        }
+
         if (currentEvent != EVENT_QUESTION) {
             handleEvent(currentEvent)
         } else {
@@ -155,6 +166,8 @@ class QuestionnaireFragment : Fragment() {
         }
 
         val currentQuestion = mainViewModel.nextQuestion()
+
+        fragmentQuestionnaireBinding.btnBack.isEnabled = true
 
         val nextEvent = anticipateFinish()
 

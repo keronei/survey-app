@@ -52,8 +52,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)
+
+        Toast.makeText(this, item.title, Toast.LENGTH_SHORT).show()
         when (item.itemId) {
-            R.menu.main_menu -> {
+            R.id.profile -> {
 
                 MaterialAlertDialogBuilder(this).setMessage("You are currently logged in.")
                     .setPositiveButton("Cancel") { dialog, _ ->
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Remove user account.", Toast.LENGTH_SHORT).show()
                     }
                     .setTitle("+254739224261")
+                    .setIcon(R.drawable.ic_baseline_account_circle_24)
                     .create()
                     .show()
             }
