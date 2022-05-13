@@ -27,7 +27,7 @@ class FloatWidget(context: Context, questionDefinition: QuestionDefinition) :
 
     override fun getAnswerField(): EditText {
         val editText = super.getAnswerField()
-        editText.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
+        editText.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL + InputType.TYPE_CLASS_NUMBER
         return editText
     }
 }
