@@ -24,5 +24,8 @@
     <string name="survey_end_instruction">You have reached the end of %s questionnaire. \n\nGive a suitable name and save.</string>
     <string name="name">Name</string>
     <string name="save">Save</string>
-    <string name="back_message">Do you want to exit this questionnaire? You will loose your responses.</string>
+    <string name="back_message">Do you want to exit this questionnaire? \n\nYou will loose your responses.</string>
+    <string name="channel_desc">Used to display sync statuses.</string>
+    <string name="notificationchannel_name">sync-status-channel</string>
+    <string name="nitification_title">Survey Submissions</string>
 </resources>

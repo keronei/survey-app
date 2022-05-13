@@ -17,10 +17,8 @@ package com.keronei.survey.presentation.views.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
-import android.text.TextWatcher
 import android.widget.EditText
 import com.keronei.survey.domain.models.QuestionDefinition
 import java.util.regex.Pattern

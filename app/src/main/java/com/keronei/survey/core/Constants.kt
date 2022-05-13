@@ -17,4 +17,10 @@ package com.keronei.survey.core
 
 object Constants {
     const val REQUEST_IMAGE_CAPTURE = 1
+
+    const val NOTIFICATION_CHANNEL_ID = "channel_worker"
+
+    const val WORKMAGAER_TAG = "SYNC_WORKER"
+
+    const val WORK_ID = "sync-responses-work"
 }

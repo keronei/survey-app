@@ -15,19 +15,29 @@
  */
 package com.keronei.survey
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.work.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.keronei.survey.core.Constants
 import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
+import com.keronei.survey.core.Constants.WORKMAGAER_TAG
+import com.keronei.survey.core.workmanager.SubmissionsWorker
 import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.concurrent.TimeUnit
 
 /**
  *  Main Activity which is the Launcher Activity
@@ -39,9 +49,17 @@ class MainActivity : AppCompatActivity() {
 
     private val helperViewModel: QuestionsHelperViewModel by viewModels()
 
+    lateinit var workManager: WorkManager
+
+    private lateinit var outputWorkInfo: LiveData<List<WorkInfo>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        createNotificationChannel()
+
+        syncResponsesPeriodically()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -53,7 +71,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)
 
-        Toast.makeText(this, item.title, Toast.LENGTH_SHORT).show()
         when (item.itemId) {
             R.id.profile -> {
 
@@ -83,6 +100,53 @@ class MainActivity : AppCompatActivity() {
             helperViewModel.setBitmap(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
         } else {
             Toast.makeText(this, "Capture was not successful.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun syncResponsesPeriodically() {
+
+        workManager = WorkManager.getInstance(applicationContext)
+
+        // Launch work manager job if there's any internet connection.
+        // Also, if there's any responses to be synced, the repo will perform a check.
+        outputWorkInfo = workManager.getWorkInfosByTagLiveData(WORKMAGAER_TAG)
+
+        val workAlreadyStarted = outputWorkInfo.value?.filter { workInfo ->
+            workInfo.tags.contains(WORKMAGAER_TAG)
+        }
+
+        if (workAlreadyStarted.isNullOrEmpty()) {
+
+            val internetRequirementConstraint =
+                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+
+            val notifyTemperatureWorkRequest =
+                PeriodicWorkRequestBuilder<SubmissionsWorker>(15, TimeUnit.MINUTES)
+                    .setConstraints(internetRequirementConstraint)
+                    .addTag(WORKMAGAER_TAG).build()
+
+            workManager.enqueueUniquePeriodicWork(
+                Constants.WORK_ID,
+                ExistingPeriodicWorkPolicy.REPLACE,
+                notifyTemperatureWorkRequest
+            )
+        }
+    }
+
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.notificationchannel_name)
+
+            val descriptionText = getString(R.string.channel_desc)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(Constants.NOTIFICATION_CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

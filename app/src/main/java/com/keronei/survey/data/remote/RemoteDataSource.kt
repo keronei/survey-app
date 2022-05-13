@@ -19,6 +19,7 @@ import com.keronei.survey.core.Resource
 import com.keronei.survey.data.remote.models.QuestionnaireResponse
 import com.keronei.survey.domain.models.ServerSubmission
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -54,13 +55,21 @@ class RemoteDataSource @Inject constructor(private val apiService: QuerySurveysA
         awaitClose { close() }
     }
 
-    suspend fun sendSubmissions(submission: ServerSubmission): Flow<Boolean> = callbackFlow {
-        try {
-            val result = apiService.submitResponses(submission)
-            trySend(result.isSuccessful)
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            trySend(false)
+    suspend fun sendSubmissions(surveyId: String, submission: String): Flow<Boolean> =
+        callbackFlow {
+            /**
+             *  dropping the submission data here.
+             *  You should use @link{@FormUlrEncoded } and @Field parameters to attach the survey ID and actual responses.
+             */
+
+            try {
+                val result = apiService.submitResponses()
+                trySend(result.isSuccessful)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+                trySend(false)
+            }
+
+            awaitClose { cancel() }
         }
-    }
 }

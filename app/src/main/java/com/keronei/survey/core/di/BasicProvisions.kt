@@ -16,6 +16,7 @@
 package com.keronei.survey.core.di
 
 import android.content.Context
+import com.google.gson.GsonBuilder
 import com.keronei.survey.BuildConfig
 import com.keronei.survey.data.remote.QuerySurveysApiService
 import com.keronei.survey.helpers.ConnectivityProvider
@@ -62,12 +63,17 @@ object BasicProvisions {
 
     @Singleton
     @Provides
-    fun providesRetrofitInstance(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-        .client(okHttpClient)
-        .baseUrl("https://run.mocky.io")
-        .addConverterFactory(
-            GsonConverterFactory.create()
-        ).build()
+    fun providesRetrofitInstance(okHttpClient: OkHttpClient): Retrofit {
+        // set lenient to allow loading PULA site without parsing the json.
+        val gson = GsonBuilder().setLenient().create()
+
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl("https://run.mocky.io")
+            .addConverterFactory(
+                GsonConverterFactory.create(gson)
+            ).build()
+    }
 
     @Singleton
     @Provides

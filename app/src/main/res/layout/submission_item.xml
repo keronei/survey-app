@@ -42,8 +42,7 @@
                 android:src="@drawable/ic_baseline_sync_problem_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/submission_name"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/unsynced" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/questionnaire_name_sub"

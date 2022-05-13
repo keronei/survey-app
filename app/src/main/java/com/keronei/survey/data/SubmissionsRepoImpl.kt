@@ -17,7 +17,9 @@ package com.keronei.survey.data
 
 import com.google.gson.Gson
 import com.keronei.survey.core.AnswerData
+import com.keronei.survey.core.Resource
 import com.keronei.survey.data.local.LocalDataSource
+import com.keronei.survey.data.models.SubmissionStatus
 import com.keronei.survey.data.models.SubmissionsDTO
 import com.keronei.survey.data.models.SubmissionsDTOUpdate
 import com.keronei.survey.data.remote.RemoteDataSource
@@ -26,9 +28,10 @@ import com.keronei.survey.domain.models.ServerSubmission
 import com.keronei.survey.domain.models.Submission
 import com.keronei.survey.domain.repositories.SubmissionsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -44,32 +47,62 @@ class SubmissionsRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun submitCurrentResponses() {
+    override suspend fun submitCurrentResponses(): Flow<SubmissionStatus> = callbackFlow {
         val submissions = localDataSource.getSubmissions()
 
-        val objectForDispatch = submissions.map { submissionsItem ->
-            ServerSubmission(
-                submissionsItem.first().questionnaireId,
-                Gson().toJson(submissionsItem.map { item -> item.submissionAsJson })
-            )
-        }
-        val ids = submissions.map { updates ->
-            updates.map { entry ->
-                SubmissionsDTOUpdate(entry.id, true)
+        val notSent = submissions.first().filter { submissionsDTO -> !submissionsDTO.synced }
+
+        if (notSent.isEmpty()) {
+            trySend(SubmissionStatus("There are no submissions to sync.", true))
+        } else {
+
+            val objectForDispatch = submissions.map { submissionsItem ->
+                val collection = "{data: ${submissionsItem.map { item -> item.submissionAsJson }}"
+
+                ServerSubmission(
+                    submissionsItem.first().questionnaireId,
+                    collection
+                )
             }
-        }
+            val ids = submissions.map { updates ->
+                updates.map { entry ->
+                    SubmissionsDTOUpdate(entry.id, true)
+                }
+            }
 
-        val item = objectForDispatch.first()
-        val result = remoteDataSource.sendSubmissions(item)
+            val item = objectForDispatch.first()
 
-        // mark sync status for dispatched responses
-        val successStatus = result.first()
-        if (successStatus) {
+            /*
+            GOING FORWARD, THIS IS A FAKE REQUEST TO SIMULATE NETWORK ACCESS AND DISPATCHING THE DATA.
+             */
+
+            val result = remoteDataSource.sendSubmissions(item.questionnaireId, item.responsesAsJson)
+
+            // mark sync status for dispatched responses
+            val successStatus = result.first()
             val toMark = ids.first()
-            toMark.forEach {
-                localDataSource.markAsSynced(it)
+
+            if (successStatus) {
+                toMark.forEach {
+                    localDataSource.markAsSynced(it)
+                }
+
+                trySend(
+                    SubmissionStatus(
+                        "Successfully synced ${toMark.size} submissions to the server.",
+                        true
+                    )
+                )
+            } else {
+                trySend(
+                    SubmissionStatus(
+                        "Failed to sync ${toMark.size} submissions. Will try again later.",
+                        false
+                    )
+                )
             }
         }
+        awaitClose { cancel() }
     }
 
     override suspend fun saveQuestionnaireResponse(
