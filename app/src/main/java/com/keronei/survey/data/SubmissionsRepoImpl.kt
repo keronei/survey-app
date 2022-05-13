@@ -56,18 +56,14 @@ class SubmissionsRepoImpl @Inject constructor(
             trySend(SubmissionStatus("There are no submissions to sync.", true))
         } else {
 
-            val objectForDispatch = submissions.map { submissionsItem ->
-                val collection = "{data: ${submissionsItem.map { item -> item.submissionAsJson }}"
-
+            val objectForDispatch = notSent.map { submissionsItem ->
                 ServerSubmission(
-                    submissionsItem.first().questionnaireId,
-                    collection
+                    submissionsItem.questionnaireId,
+                    submissionsItem.submissionAsJson
                 )
             }
-            val ids = submissions.map { updates ->
-                updates.map { entry ->
-                    SubmissionsDTOUpdate(entry.id, true)
-                }
+            val ids = notSent.map { updates ->
+                SubmissionsDTOUpdate(updates.id, true)
             }
 
             val item = objectForDispatch.first()
@@ -76,27 +72,28 @@ class SubmissionsRepoImpl @Inject constructor(
             GOING FORWARD, THIS IS A FAKE REQUEST TO SIMULATE NETWORK ACCESS AND DISPATCHING THE DATA.
              */
 
-            val result = remoteDataSource.sendSubmissions(item.questionnaireId, item.responsesAsJson)
+            val result =
+                remoteDataSource.sendSubmissions(item.questionnaireId, item.responsesAsJson)
 
             // mark sync status for dispatched responses
             val successStatus = result.first()
-            val toMark = ids.first()
+
 
             if (successStatus) {
-                toMark.forEach {
+                ids.forEach {
                     localDataSource.markAsSynced(it)
                 }
 
                 trySend(
                     SubmissionStatus(
-                        "Successfully synced ${toMark.size} submissions to the server.",
+                        "Successfully synced ${ids.size} submissions to the server.",
                         true
                     )
                 )
             } else {
                 trySend(
                     SubmissionStatus(
-                        "Failed to sync ${toMark.size} submissions. Will try again later.",
+                        "Failed to sync ${ids.size} submissions. Will try again later.",
                         false
                     )
                 )
