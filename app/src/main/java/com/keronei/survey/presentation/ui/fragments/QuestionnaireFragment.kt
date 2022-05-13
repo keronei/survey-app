@@ -19,11 +19,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.keronei.survey.R
 import com.keronei.survey.core.QuestionnaireController.EVENT_BEGINNING_QUESTIONNAIRE
 import com.keronei.survey.core.QuestionnaireController.EVENT_END_QUESTIONNAIRE
@@ -31,8 +35,10 @@ import com.keronei.survey.core.QuestionnaireController.EVENT_QUESTION
 import com.keronei.survey.core.QuestionnaireController.UNKNOWN_EVENT
 import com.keronei.survey.core.WidgetFactory
 import com.keronei.survey.databinding.FragmentQuestionnaireBinding
+import com.keronei.survey.databinding.SurveyEndDialogBinding
 import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
 import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
+import com.keronei.survey.presentation.ui.viewmodel.SubmissionsViewModel
 import com.keronei.survey.presentation.views.QuestionWidget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,6 +50,8 @@ class QuestionnaireFragment : Fragment() {
     private lateinit var fragmentQuestionnaireBinding: FragmentQuestionnaireBinding
 
     private val mainViewModel: MainViewModel by activityViewModels()
+
+    private val submissionViewModel: SubmissionsViewModel by activityViewModels()
 
     private val helperViewModel: QuestionsHelperViewModel by activityViewModels()
 
@@ -65,7 +73,8 @@ class QuestionnaireFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        widgetFactory = WidgetFactory(requireContext(), requireActivity(), lifecycleScope, helperViewModel)
+        widgetFactory =
+            WidgetFactory(requireContext(), requireActivity(), lifecycleScope, helperViewModel)
         // On start, the user is starting a questionnaire and is in Q1
         val initialQuestion = mainViewModel.nextQuestion()
 
@@ -163,11 +172,55 @@ class QuestionnaireFragment : Fragment() {
             }
 
             EVENT_END_QUESTIONNAIRE -> {
-                fragmentQuestionnaireBinding.btnNext.text = getString(R.string.finish)
+                showCompletionDialog()
             }
 
             UNKNOWN_EVENT -> {
             }
         }
+    }
+
+    private fun showCompletionDialog() {
+        val view: SurveyEndDialogBinding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.survey_end_dialog, null, false)
+
+        val dialog = MaterialAlertDialogBuilder(requireContext()).setView(view.root).create()
+
+        val params = ConstraintLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+
+        val questionnaireName =
+            mainViewModel.selectedQuestionnaireToFill?.id ?: "Unknown questionnaire."
+
+        view.edittextNameSubmissionInstruction.text =
+            getString(R.string.survey_end_instruction, questionnaireName)
+
+        view.saveSubmission.setOnClickListener {
+            val providedName = view.completedSubmissionName.text
+
+            if (providedName.isEmpty() || providedName.length < 5) {
+                view.completedSubmissionName.error = "Name should be 5 characters minimum."
+            } else {
+                val responses = mainViewModel.getCurrentQuestionnaireResponses()
+
+                submissionViewModel.saveQuestionnaireResponses(
+                    questionnaireName,
+                    providedName.trim().toString(),
+                    responses
+                )
+
+                dialog.dismiss()
+
+                findNavController().popBackStack()
+
+            }
+        }
+
+
+        dialog.show()
+
     }
 }

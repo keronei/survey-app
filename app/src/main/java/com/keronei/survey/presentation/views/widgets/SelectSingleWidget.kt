@@ -20,6 +20,7 @@ import android.content.Context
 import android.view.View
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Space
 import com.keronei.survey.R
 import com.keronei.survey.core.AnswerData
 import com.keronei.survey.domain.models.QuestionDefinition
@@ -73,23 +74,23 @@ class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinitio
             }
         }
 
-            radioGroup.setOnCheckedChangeListener { _, checkedId ->
-                val selectionItem = options.firstOrNull { item ->
-                    item.value == cacheSelector[checkedId]
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val selectionItem = options.firstOrNull { item ->
+                item.value == cacheSelector[checkedId]
 
-                }
+            }
 
-                selectionItem?.selected = true
+            selectionItem?.selected = true
 
-                // unselect others
-                options.forEach { choice ->
-                    if (choice.value != selectionItem?.value) {
-                        choice.selected = false
-                    }
-
+            // unselect others
+            options.forEach { choice ->
+                if (choice.value != selectionItem?.value) {
+                    choice.selected = false
                 }
 
             }
+
+        }
 
         return view
     }

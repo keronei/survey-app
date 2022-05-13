@@ -21,4 +21,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="image_preview_window">Image preview window</string>
+    <string name="survey_end_instruction">You have reached the end of %s questionnaire. \n\nGive a suitable name and save.</string>
+    <string name="name">Name</string>
+    <string name="save">Save</string>
 </resources>

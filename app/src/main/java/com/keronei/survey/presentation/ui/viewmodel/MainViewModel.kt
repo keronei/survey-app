@@ -15,6 +15,7 @@
  */
 package com.keronei.survey.presentation.ui.viewmodel
 
+import androidx.core.content.contentValuesOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keronei.survey.core.QuestionnaireController
@@ -24,6 +25,7 @@ import com.keronei.survey.domain.mapper.QuestionnaireDefToPresentationMapper
 import com.keronei.survey.domain.models.QuestionDefinition
 import com.keronei.survey.domain.models.QuestionnaireDef
 import com.keronei.survey.domain.repositories.QuestionnaireRepository
+import com.keronei.survey.domain.repositories.SubmissionsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +43,8 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
 
     private val currentQuestionnaireController = QuestionnaireController
 
-    private val questionnaires: MutableStateFlow<ViewState> = MutableStateFlow(value = ViewState.Empty)
+    private val questionnaires: MutableStateFlow<ViewState> =
+        MutableStateFlow(value = ViewState.Empty)
 
     val questionnaireStateFlow: StateFlow<ViewState> = questionnaires
 
@@ -50,7 +53,7 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
     var selectedQuestionnaireToFill: QuestionnaireDef? = null
         private set
 
-    fun getAvailableQuestionnaires(){
+    fun getAvailableQuestionnaires() {
         viewModelScope.launch {
             questionnaireRepository.getQuestionnaires().collect { list ->
                 when (list) {
@@ -103,6 +106,8 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
 
     fun saveCurrentAnswer(questionDefinition: QuestionDefinition) =
         currentQuestionnaireController.saveQuestionResponse(questionDefinition)
+
+    fun getCurrentQuestionnaireResponses() = currentQuestionnaireController.getQuestionnaireResponses()
 
     fun getQuestionnaireById(string: String) = questionnaireRepository.getQuestionnaireById(string)
 }
