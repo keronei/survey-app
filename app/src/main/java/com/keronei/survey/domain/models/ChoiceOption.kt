@@ -15,4 +15,4 @@
  */
 package com.keronei.survey.domain.models
 
-data class ChoiceOption(val value: String, val displayText: String, val selected: Boolean = false)
+data class ChoiceOption(val value: String, val displayText: String, var selected: Boolean = false)

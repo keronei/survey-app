@@ -24,6 +24,7 @@ import com.keronei.survey.R
 import com.keronei.survey.core.AnswerData
 import com.keronei.survey.domain.models.QuestionDefinition
 import com.keronei.survey.presentation.views.QuestionWidget
+import timber.log.Timber
 
 @SuppressLint("ViewConstructor")
 class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinition) :
@@ -49,17 +50,46 @@ class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinitio
 
         val options = questionDetails.options
 
+        val previousAnswer = questionDetails.answerData
+
+
         for (option in options) {
             val radioButton = RadioButton(context)
 
             radioButton.text = option.displayText
             radioButton.tag = option.value
-            radioButton.isSelected = option.selected
             val generatedId = View.generateViewId()
             radioButton.id = generatedId
             cacheSelector[generatedId] = option.value
+            radioButton.isChecked = option.selected
+
             radioGroup.addView(radioButton)
+
+
+            if (previousAnswer != null) {
+                if (option.value == previousAnswer.response) {
+                    radioButton.isChecked = true
+                }
+            }
         }
+
+            radioGroup.setOnCheckedChangeListener { _, checkedId ->
+                val selectionItem = options.firstOrNull { item ->
+                    item.value == cacheSelector[checkedId]
+
+                }
+
+                selectionItem?.selected = true
+
+                // unselect others
+                options.forEach { choice ->
+                    if (choice.value != selectionItem?.value) {
+                        choice.selected = false
+                    }
+
+                }
+
+            }
 
         return view
     }
@@ -69,7 +99,10 @@ class SelectSingleWidget(context: Context, questionDefinition: QuestionDefinitio
 
         val currentSelection = cacheSelector[selectedOption]
 
-        return if (currentSelection == null) null else AnswerData(getQuestionDefinition().id, currentSelection)
+        return if (currentSelection == null) null else AnswerData(
+            getQuestionDefinition().id,
+            currentSelection
+        )
     }
 
     override fun saveCurrentAnswer(): Boolean {

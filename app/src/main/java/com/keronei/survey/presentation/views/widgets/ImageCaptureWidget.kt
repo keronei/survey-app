@@ -48,9 +48,14 @@ class ImageCaptureWidget(
                 // display the image
                 val imageView: ImageView = layout.findViewById(R.id.image_preview)
 
-                if (bitmap != null) {
-                    imageView.setImageBitmap(bitmap)
+                if (bitmap != null && this@ImageCaptureWidget::currentPhotoPath.isInitialized) {
+                    try {
+                        val presetBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                        imageView.setImageBitmap(presetBitmap)
 
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
                     val captureBtn = layout.findViewById<MaterialButton>(R.id.btn_capture)
 
                     captureBtn.text = context.getString(R.string.retake_picture)

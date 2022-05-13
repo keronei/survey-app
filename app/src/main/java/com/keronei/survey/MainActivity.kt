@@ -81,15 +81,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data")
+            // Send a flag to the observer
+            helperViewModel.setBitmap(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
 
-            Timber.d("Result -> ${data?.extras}")
-
-            if (imageBitmap != null) {
-                helperViewModel.setBitmap(imageBitmap as Bitmap)
-            } else {
-                Toast.makeText(this, "Image was null.", Toast.LENGTH_SHORT).show()
-            }
         } else {
             Toast.makeText(this, "Capture was not successful.", Toast.LENGTH_SHORT).show()
         }
