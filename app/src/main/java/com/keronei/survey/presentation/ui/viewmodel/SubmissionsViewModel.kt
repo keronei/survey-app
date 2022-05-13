@@ -22,7 +22,6 @@ import com.keronei.survey.core.SubmissionViewState
 import com.keronei.survey.domain.repositories.SubmissionsRepository
 import com.keronei.survey.presentation.models.SubmissionPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect

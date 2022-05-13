@@ -16,7 +16,6 @@
 package com.keronei.survey.data.local.dao
 
 import androidx.room.*
-import com.keronei.survey.data.models.QuestionDefDTO
 import com.keronei.survey.data.models.QuestionnaireDefDTO
 import com.keronei.survey.data.models.QuestionnaireSubDTO
 import kotlinx.coroutines.flow.Flow
@@ -30,15 +29,15 @@ interface QuestionnaireDao {
 
     @Query(
         "SELECT * , (SELECT COUNT(*) FROM SubmissionsDTO" +
-                " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
-                " AS submissionsCount FROM QuestionnaireDefDTO"
+            " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
+            " AS submissionsCount FROM QuestionnaireDefDTO"
     )
     fun getAllQuestionnaires(): Flow<List<QuestionnaireSubDTO>>
 
     @Query(
         "SELECT *, (SELECT COUNT(*) FROM SubmissionsDTO" +
-                " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
-                " AS submissionsCount  FROM QuestionnaireDefDTO WHERE id = :id"
+            " WHERE SubmissionsDTO.questionnaireId = QuestionnaireDefDTO.id)" +
+            " AS submissionsCount  FROM QuestionnaireDefDTO WHERE id = :id"
     )
     fun getQuestionnaireById(id: String): Flow<QuestionnaireSubDTO>
 

@@ -23,7 +23,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.keronei.survey.R
 import com.keronei.survey.core.AnswerData
-import com.keronei.survey.databinding.QuestionWidgetBinding
 import com.keronei.survey.domain.models.QuestionDefinition
 
 abstract class QuestionWidget(
@@ -44,7 +43,6 @@ abstract class QuestionWidget(
         ).findViewById(R.id.question_widget_container)
 
         setQuestionLabel()
-
     }
 
     abstract fun getAnswer(): AnswerData?
@@ -60,7 +58,7 @@ abstract class QuestionWidget(
 
     fun addAnswerView(view: View) {
         val answerView: ViewGroup =
-            findViewById(R.id.answer_container)//questionWidgetBinding.answerContainer
+            findViewById(R.id.answer_container) // questionWidgetBinding.answerContainer
 
         val params = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,

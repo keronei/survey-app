@@ -15,7 +15,6 @@
  */
 package com.keronei.survey.presentation.ui.viewmodel
 
-import androidx.core.content.contentValuesOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keronei.survey.core.QuestionnaireController
@@ -25,15 +24,12 @@ import com.keronei.survey.domain.mapper.QuestionnaireDefToPresentationMapper
 import com.keronei.survey.domain.models.QuestionDefinition
 import com.keronei.survey.domain.models.QuestionnaireDef
 import com.keronei.survey.domain.repositories.QuestionnaireRepository
-import com.keronei.survey.domain.repositories.SubmissionsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -82,7 +78,6 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
                 }
             }
         }
-
     }
 
     fun setSelectedQuestionnaire(selectedQuestionnaireId: String) {
@@ -103,6 +98,8 @@ class MainViewModel @Inject constructor(private val questionnaireRepository: Que
     fun getCurrentEvent() = currentQuestionnaireController.getCurrentEvent()
 
     fun getNextEvent() = currentQuestionnaireController.getNextEvent()
+
+    fun determineIfAtStart() = currentQuestionnaireController.determineIfAtStart()
 
     fun saveCurrentAnswer(questionDefinition: QuestionDefinition) =
         currentQuestionnaireController.saveQuestionResponse(questionDefinition)

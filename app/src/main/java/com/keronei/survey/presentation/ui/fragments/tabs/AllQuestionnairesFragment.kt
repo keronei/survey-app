@@ -32,12 +32,8 @@ import com.keronei.survey.core.ViewState
 import com.keronei.survey.databinding.AllQuestionnairesFragmentBinding
 import com.keronei.survey.presentation.ui.QuestionnairesRecyclerAdapter
 import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 class AllQuestionnairesFragment : Fragment() {
@@ -83,67 +79,65 @@ class AllQuestionnairesFragment : Fragment() {
                 )
                     .show()
             }
-
         }, requireContext())
 
-        setupRecycler()
+            setupRecycler()
 
-        lifecycleScope.launchWhenResumed {
-            mainViewModel.getAvailableQuestionnaires()
-            mainViewModel.questionnaireStateFlow.collect { questionnaires ->
-                when (questionnaires) {
-                    ViewState.Empty -> {
-                        allQuestionnairesRecyclerAdapter.submitList(emptyList())
+            lifecycleScope.launchWhenResumed {
+                mainViewModel.getAvailableQuestionnaires()
+                mainViewModel.questionnaireStateFlow.collect { questionnaires ->
+                    when (questionnaires) {
+                        ViewState.Empty -> {
+                            allQuestionnairesRecyclerAdapter.submitList(emptyList())
 
-                        allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
-                            GONE
-                        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.isEnabled = true
+                            allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
+                                GONE
+                            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.isEnabled = true
 
-                        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility =
-                            VISIBLE
-                        allQuestionnairesFragmentBinding.fillingInstructions.text =
-                            getString(R.string.no_questionnaire)
-                    }
-                    is ViewState.Error -> {
-                        allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
-                            GONE
-                        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility =
-                            VISIBLE
-                        allQuestionnairesFragmentBinding.fillingInstructions.text =
-                            questionnaires.exception.message
-                        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.isEnabled = true
+                            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility =
+                                VISIBLE
+                            allQuestionnairesFragmentBinding.fillingInstructions.text =
+                                getString(R.string.no_questionnaire)
+                        }
+                        is ViewState.Error -> {
+                            allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
+                                GONE
+                            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility =
+                                VISIBLE
+                            allQuestionnairesFragmentBinding.fillingInstructions.text =
+                                questionnaires.exception.message
+                            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.isEnabled = true
+                        }
+                        ViewState.Loading -> {
+                            allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
+                                GONE
+                            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility =
+                                VISIBLE
+                            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.isEnabled = false
+                            allQuestionnairesFragmentBinding.fillingInstructions.text =
+                                getString(R.string.loading)
+                        }
+                        is ViewState.Success -> {
+                            allQuestionnairesRecyclerAdapter.submitList(questionnaires.presentations)
 
-                    }
-                    ViewState.Loading -> {
-                        allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
-                            GONE
-                        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility =
-                            VISIBLE
-                        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.isEnabled = false
-                        allQuestionnairesFragmentBinding.fillingInstructions.text =
-                            getString(R.string.loading)
-                    }
-                    is ViewState.Success -> {
-                        allQuestionnairesRecyclerAdapter.submitList(questionnaires.presentations)
-
-                        allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
-                            VISIBLE
-                        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility = GONE
-                        allQuestionnairesFragmentBinding.fillingInstructions.text =
-                            getString(R.string.select_a_questionnaire_to_fill)
+                            allQuestionnairesFragmentBinding.availableQuestionnairesRecycler.visibility =
+                                VISIBLE
+                            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.visibility = GONE
+                            allQuestionnairesFragmentBinding.fillingInstructions.text =
+                                getString(R.string.select_a_questionnaire_to_fill)
+                        }
                     }
                 }
             }
+
+            allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.setOnClickListener {
+                mainViewModel.getAvailableQuestionnaires()
+            }
         }
 
-        allQuestionnairesFragmentBinding.btnDownloadQuestionnaires.setOnClickListener {
-            mainViewModel.getAvailableQuestionnaires()
+        private fun setupRecycler() {
+            with(allQuestionnairesFragmentBinding.availableQuestionnairesRecycler) {
+                adapter = allQuestionnairesRecyclerAdapter
+            }
         }
     }
-
-    private fun setupRecycler() {
-        with(allQuestionnairesFragmentBinding.availableQuestionnairesRecycler) {
-            adapter = allQuestionnairesRecyclerAdapter
-        }
-    }
-}

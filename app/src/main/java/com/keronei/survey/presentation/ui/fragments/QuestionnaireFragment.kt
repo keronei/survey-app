@@ -19,9 +19,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -91,56 +90,83 @@ class QuestionnaireFragment : Fragment() {
     }
 
     private fun handleNavigationButtonsClick() {
-        fragmentQuestionnaireBinding.btnNext.setOnClickListener {
-            val currentEvent = mainViewModel.getCurrentEvent()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // wait for start of questionnaire flag
+                    val currentEvent = mainViewModel.determineIfAtStart()
 
-            val answerOk = validateCurrentAnswer()
-
-            if (!answerOk) {
-                return@setOnClickListener
-            }
-
-            val currentQuestion = mainViewModel.nextQuestion()
-
-            val nextEvent = anticipateFinish()
-
-            if (nextEvent == EVENT_END_QUESTIONNAIRE) {
-                showCompletionDialog()
-            } else
-
-                if (currentEvent != EVENT_QUESTION) {
-                    Toast.makeText(
-                        context,
-                        "Event is not pointing to a question.",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    handleEvent(currentEvent)
-                } else {
-                    if (currentQuestion != null) {
-                        val widgetToDisplay = widgetFactory.createWidgetForQuestion(currentQuestion)
-
-                        showQuestionView(widgetToDisplay)
+                    if (currentEvent == EVENT_BEGINNING_QUESTIONNAIRE) {
+                        MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.back_message))
+                            .setPositiveButton("No") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("Yes") { dialog, _ ->
+                                if (isEnabled) {
+                                    isEnabled = false
+                                    dialog.dismiss()
+                                    requireActivity().onBackPressed()
+                                }
+                            }
+                            .show()
                     } else {
-                        Toast.makeText(context, "Question is empty.", Toast.LENGTH_SHORT).show()
+                        navigateBack()
                     }
                 }
+            }
+        )
+
+        fragmentQuestionnaireBinding.btnNext.setOnClickListener {
+            navigateForward()
         }
 
         fragmentQuestionnaireBinding.btnBack.setOnClickListener {
-            val previousQuestion = mainViewModel.previousQuestion()
+            navigateBack()
+        }
+    }
 
-            val currentEvent = mainViewModel.getCurrentEvent()
+    private fun navigateBack() {
+        val previousQuestion = mainViewModel.previousQuestion()
 
-            anticipateFinish()
+        val currentEvent = mainViewModel.getCurrentEvent()
 
-            if (currentEvent != EVENT_QUESTION) {
-                handleEvent(currentEvent)
-            } else {
-                if (previousQuestion != null) {
-                    val question = widgetFactory.createWidgetForQuestion(previousQuestion)
-                    showQuestionView(question)
-                }
+        anticipateFinish()
+
+        validateCurrentAnswer()
+
+        if (currentEvent != EVENT_QUESTION) {
+            handleEvent(currentEvent)
+        } else {
+            if (previousQuestion != null) {
+                val question = widgetFactory.createWidgetForQuestion(previousQuestion)
+                showQuestionView(question)
+            }
+        }
+    }
+
+    private fun navigateForward() {
+        val currentEvent = mainViewModel.getCurrentEvent()
+
+        val answerOk = validateCurrentAnswer()
+
+        if (!answerOk) {
+            return
+        }
+
+        val currentQuestion = mainViewModel.nextQuestion()
+
+        val nextEvent = anticipateFinish()
+
+        if (currentEvent != EVENT_QUESTION) {
+            handleEvent(currentEvent)
+        } else {
+            if (currentQuestion != null) {
+                val widgetToDisplay = widgetFactory.createWidgetForQuestion(currentQuestion)
+
+                showQuestionView(widgetToDisplay)
+            } else if (nextEvent == EVENT_END_QUESTIONNAIRE) {
+                showCompletionDialog()
             }
         }
     }
@@ -182,7 +208,6 @@ class QuestionnaireFragment : Fragment() {
             }
 
             EVENT_END_QUESTIONNAIRE -> {
-
             }
 
             UNKNOWN_EVENT -> {
@@ -219,12 +244,9 @@ class QuestionnaireFragment : Fragment() {
                 dialog.dismiss()
 
                 findNavController().popBackStack()
-
             }
         }
 
-
         dialog.show()
-
     }
 }

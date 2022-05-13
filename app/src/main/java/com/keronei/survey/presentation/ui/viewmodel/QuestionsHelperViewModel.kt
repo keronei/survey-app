@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-
 class QuestionsHelperViewModel : ViewModel() {
     private val _imageInWaiting: MutableStateFlow<Bitmap?> = MutableStateFlow(value = null)
 

@@ -89,7 +89,6 @@ class QuestionnairesRepoImpl @Inject constructor(
                 trySend(Resource.Success(availableLocally))
             }
 
-
             awaitClose { close() }
         }
 }

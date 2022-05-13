@@ -22,15 +22,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
-import com.keronei.survey.presentation.ui.viewmodel.MainViewModel
 import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
 
 /**
  *  Main Activity which is the Launcher Activity
@@ -57,20 +54,18 @@ class MainActivity : AppCompatActivity() {
         super.onOptionsItemSelected(item)
         when (item.itemId) {
             R.menu.main_menu -> {
-                val alertDialog = MaterialAlertDialogBuilder(this).setTitle("+254739224261")
-                    .setMessage("You are currently logged in.")
-                    .setIcon(R.drawable.ic_baseline_account_circle_24)
+
+                MaterialAlertDialogBuilder(this).setMessage("You are currently logged in.")
+                    .setPositiveButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Logout") { dialog, _ ->
+                        dialog.dismiss()
+                        Toast.makeText(this, "Remove user account.", Toast.LENGTH_SHORT).show()
+                    }
+                    .setTitle("+254739224261")
                     .create()
-
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Cancel") { dialogInterface, _ ->
-                    dialogInterface.dismiss()
-                }
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Logout") { dialogInterface, _ ->
-                    dialogInterface.dismiss()
-                    Toast.makeText(this, "Remove user account.", Toast.LENGTH_SHORT).show()
-                }
-
-                alertDialog.show()
+                    .show()
             }
         }
 
@@ -83,11 +78,8 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             // Send a flag to the observer
             helperViewModel.setBitmap(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
-
         } else {
             Toast.makeText(this, "Capture was not successful.", Toast.LENGTH_SHORT).show()
         }
-
     }
-
 }

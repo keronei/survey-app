@@ -17,7 +17,6 @@ package com.keronei.survey.core
 
 import com.keronei.survey.core.events.EventNode
 import com.keronei.survey.core.events.LinkedList
-import com.keronei.survey.domain.models.ChoiceOption
 import com.keronei.survey.domain.models.QuestionDefinition
 import com.keronei.survey.domain.models.QuestionnaireDef
 
@@ -40,7 +39,7 @@ object QuestionnaireController {
     private val responses = mutableMapOf<String, AnswerData>()
 
     fun setupController(questionnaireDef: QuestionnaireDef) {
-        //clear previous config
+        // clear previous config
         questions = LinkedList()
         responses.clear()
         currentIndex = -1
@@ -94,15 +93,13 @@ object QuestionnaireController {
         if (next == null) {
             // last-born node
             val item = list.firstOrNull { node -> node.nextQuestion == null }
-            if (item != null) {
-                if (list.size == 1) {
-                    questions.append(item)
-                    return linkedList
-                }
+            if (item != null && list.size == 1) {
+                questions.append(item)
+                return linkedList
             }
         } else {
             // previous id points to next of current qsn
-            val item = list.firstOrNull { item -> item.id == next }// first parent
+            val item = list.firstOrNull { item -> item.id == next } // first parent
 
             if (item != null) {
                 return if (list.size == 1) {
@@ -115,9 +112,7 @@ object QuestionnaireController {
 
                     attachPreceding(list, linkedList, item.nextQuestion)
                 }
-
             }
-
         }
 
         return linkedList
@@ -126,7 +121,7 @@ object QuestionnaireController {
     fun getCurrentQuestion() = currentQuestion?.value
 
     fun getNextQuestion(): QuestionDefinition? {
-        if (currentIndex == -1) {// first time call
+        if (currentIndex == -1) { // first time call
             currentIndex += 1
             currentQuestion = questions.eventNodeAt(0)
         } else {
@@ -163,6 +158,16 @@ object QuestionnaireController {
 
         return if (whatsNext == null) {
             EVENT_END_QUESTIONNAIRE
+        } else {
+            EVENT_QUESTION
+        }
+    }
+
+    fun determineIfAtStart(): Int {
+        val nextIndex = currentIndex - 1
+
+        return if (nextIndex < 0) {
+            EVENT_BEGINNING_QUESTIONNAIRE
         } else {
             EVENT_QUESTION
         }

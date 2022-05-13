@@ -65,44 +65,43 @@ class SubmissionsFragment : Fragment() {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }, requireContext())
 
-        setupSubmissionsRecycler()
+            setupSubmissionsRecycler()
 
-        lifecycleScope.launchWhenResumed {
-            viewModel.getSubmissions()
-            viewModel.submissionsStateFlow.collect { submissions ->
+            lifecycleScope.launchWhenResumed {
+                viewModel.getSubmissions()
+                viewModel.submissionsStateFlow.collect { submissions ->
 
-                when (submissions) {
-                    SubmissionViewState.Empty -> {
-                        submissionsRecyclerAdapter.submitList(emptyList())
-                        submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
-                        submissionsFragmentBinding.submissionsRecycler.visibility = GONE
-                    }
-                    is SubmissionViewState.Error -> {
-                        submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
-                        submissionsFragmentBinding.noSubmissionsText.text =
-                            getString(R.string.cannot_open_submissions)
-                        submissionsFragmentBinding.submissionsRecycler.visibility = GONE
-                    }
-                    SubmissionViewState.Loading -> {
-                        submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
-                        submissionsFragmentBinding.noSubmissionsText.text =
-                            getString(R.string.loading_submissions)
-                        submissionsFragmentBinding.submissionsRecycler.visibility = GONE
-                    }
-                    is SubmissionViewState.Success -> {
-                        submissionsRecyclerAdapter.submitList(submissions.presentations)
-                        submissionsFragmentBinding.noSubmissionsText.visibility = GONE
-                        submissionsFragmentBinding.submissionsRecycler.visibility = VISIBLE
+                    when (submissions) {
+                        SubmissionViewState.Empty -> {
+                            submissionsRecyclerAdapter.submitList(emptyList())
+                            submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
+                            submissionsFragmentBinding.submissionsRecycler.visibility = GONE
+                        }
+                        is SubmissionViewState.Error -> {
+                            submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
+                            submissionsFragmentBinding.noSubmissionsText.text =
+                                getString(R.string.cannot_open_submissions)
+                            submissionsFragmentBinding.submissionsRecycler.visibility = GONE
+                        }
+                        SubmissionViewState.Loading -> {
+                            submissionsFragmentBinding.noSubmissionsText.visibility = VISIBLE
+                            submissionsFragmentBinding.noSubmissionsText.text =
+                                getString(R.string.loading_submissions)
+                            submissionsFragmentBinding.submissionsRecycler.visibility = GONE
+                        }
+                        is SubmissionViewState.Success -> {
+                            submissionsRecyclerAdapter.submitList(submissions.presentations)
+                            submissionsFragmentBinding.noSubmissionsText.visibility = GONE
+                            submissionsFragmentBinding.submissionsRecycler.visibility = VISIBLE
+                        }
                     }
                 }
+            }
+        }
 
+        private fun setupSubmissionsRecycler() {
+            with(submissionsFragmentBinding.submissionsRecycler) {
+                adapter = submissionsRecyclerAdapter
             }
         }
     }
-
-    private fun setupSubmissionsRecycler() {
-        with(submissionsFragmentBinding.submissionsRecycler) {
-            adapter = submissionsRecyclerAdapter
-        }
-    }
-}
