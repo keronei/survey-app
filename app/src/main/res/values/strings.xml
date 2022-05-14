@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Survey App</string>
     <string name="login">Login</string>
-    <string name="phone_number">e.g. 254123…</string>
+    <string name="phone_number">e.g. +254123…</string>
     <string name="password">Password</string>
     <string name="survey_app_logo">Survey app logo</string>
     <string name="let_s_start">Let\'s start</string>
@@ -31,4 +31,6 @@
     <string name="provide_your_phone_number">Provide your phone number.</string>
     <string name="input_your_password">Input your password.</string>
     <string name="invalid_phone_message">Ensure you start with +254, then input correct number.</string>
+    <string name="pass">1234GYD%$</string>
+    <string name="incorrect_pass">Incorrect password.</string>
 </resources>

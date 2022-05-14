@@ -23,4 +23,10 @@ object Constants {
     const val WORKMAGAER_TAG = "SYNC_WORKER"
 
     const val WORK_ID = "sync-responses-work"
+
+    const val PHONE_NUMBER_KEY = "phone-entry"
+
+    const val IS_LOGGED_IN_KEY = "is_logged_in"
+
+    const val PASS_KEY = "password"
 }

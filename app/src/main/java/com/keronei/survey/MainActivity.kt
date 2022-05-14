@@ -19,6 +19,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -34,7 +35,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.work.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationBarItemView
+import com.google.common.hash.Hashing
 import com.keronei.survey.core.Constants
+import com.keronei.survey.core.Constants.IS_LOGGED_IN_KEY
+import com.keronei.survey.core.Constants.PASS_KEY
+import com.keronei.survey.core.Constants.PHONE_NUMBER_KEY
 import com.keronei.survey.core.Constants.REQUEST_IMAGE_CAPTURE
 import com.keronei.survey.core.Constants.WORKMAGAER_TAG
 import com.keronei.survey.core.workmanager.SubmissionsWorker
@@ -42,7 +47,9 @@ import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
+import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  *  Main Activity which is the Launcher Activity
@@ -62,6 +69,9 @@ class MainActivity : AppCompatActivity() {
 
     var redirected = false
 
+    @Inject
+    lateinit var preferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -71,6 +81,25 @@ class MainActivity : AppCompatActivity() {
         syncResponsesPeriodically()
 
         navigateToHomeOrLogin()
+
+        preparePassword()
+    }
+
+    private fun preparePassword() {
+        val hasPasswordSet = preferences.contains(PASS_KEY)
+        if (!hasPasswordSet) {
+            // Only set the password once.
+            val passwordHash =
+                Hashing.sha256()
+                    .hashString(getString(R.string.pass), Charset.defaultCharset())
+
+            preferences
+                .edit()
+                .putLong(PASS_KEY, passwordHash.padToLong())
+                .apply()
+        }
+
+
     }
 
     private fun navigateToHomeOrLogin() {
@@ -80,12 +109,12 @@ class MainActivity : AppCompatActivity() {
         if (hostFragment != null) {
             controller = hostFragment.findNavController()
 
-            controller.addOnDestinationChangedListener { controller, destination, arguments ->
+            controller.addOnDestinationChangedListener { controller, destination, _ ->
                 when (destination.id) {
                     R.id.homeFragment -> {
-                        if (!redirected) {
+                        val isLoggedIn = preferences.getBoolean(IS_LOGGED_IN_KEY, false)
+                        if (!isLoggedIn) {
                             controller.navigate(R.id.action_homeFragment_to_loginFragment)
-                            redirected = true
                         }
                     }
                 }
@@ -112,6 +141,8 @@ class MainActivity : AppCompatActivity() {
 
                     if (currentDestination?.id != R.id.loginFragment) {
 
+                        val savedPhone = preferences.getString(PHONE_NUMBER_KEY, "Empty Phone")
+
                         MaterialAlertDialogBuilder(this).setMessage("You are currently logged in.")
                             .setPositiveButton("Cancel") { dialog, _ ->
                                 dialog.dismiss()
@@ -120,12 +151,17 @@ class MainActivity : AppCompatActivity() {
                                 dialog.dismiss()
 
                                 if (this::controller.isInitialized) {
-                                    redirected = false
+
+                                    val editor = preferences.edit()
+                                    editor.remove(IS_LOGGED_IN_KEY)
+                                    editor.remove(PHONE_NUMBER_KEY)
+                                    editor.apply()
+
                                     controller.navigate(R.id.action_homeFragment_to_loginFragment)
                                 }
 
                             }
-                            .setTitle("+254739224261")
+                            .setTitle(savedPhone)
                             .setIcon(R.drawable.ic_baseline_account_circle_24)
                             .create()
                             .show()

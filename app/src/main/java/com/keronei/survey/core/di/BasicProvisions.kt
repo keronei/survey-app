@@ -16,6 +16,8 @@
 package com.keronei.survey.core.di
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.google.gson.GsonBuilder
 import com.keronei.survey.BuildConfig
 import com.keronei.survey.data.remote.QuerySurveysApiService
@@ -79,4 +81,10 @@ object BasicProvisions {
     @Provides
     fun providesApiService(retrofit: Retrofit): QuerySurveysApiService =
         retrofit.create(QuerySurveysApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesPreferenceInstance(@ApplicationContext context: Context): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
+
 }

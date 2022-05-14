@@ -15,6 +15,7 @@
  */
 package com.keronei.survey.presentation.ui.fragments
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,11 +25,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.common.hash.Hashing
 import com.keronei.survey.R
+import com.keronei.survey.core.Constants.IS_LOGGED_IN_KEY
+import com.keronei.survey.core.Constants.PASS_KEY
+import com.keronei.survey.core.Constants.PHONE_NUMBER_KEY
 import com.keronei.survey.databinding.LoginFragmentBinding
 import com.keronei.survey.presentation.ui.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import java.nio.charset.Charset
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -36,6 +44,9 @@ class LoginFragment : Fragment() {
     val viewModel: LoginViewModel by activityViewModels()
 
     private lateinit var loginBinding: LoginFragmentBinding
+
+    @Inject
+    lateinit var sharedPreference: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,9 +74,37 @@ class LoginFragment : Fragment() {
                 if (matcher.matches()) {
 
                     if (loginBinding.passwordInput.text.isNotEmpty()) {
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
 
-                        sendEmail()
+                        val providedPassword = loginBinding.passwordInput.text.trim()
+
+                        val passwordHash =
+                            Hashing.sha256().hashString(providedPassword, Charset.defaultCharset())
+                                .padToLong()
+
+                        val savedPassword = sharedPreference.getLong(PASS_KEY, 0L)
+
+                        if (passwordHash == savedPassword) {
+
+                            val editor = sharedPreference.edit()
+
+                            editor.putBoolean(IS_LOGGED_IN_KEY, true)
+
+                            editor.putString(PHONE_NUMBER_KEY, providedPhone.toString())
+
+                            editor.apply()
+
+                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+
+                            sendEmail()
+                        } else {
+                            loginBinding.passwordInput.error = getString(R.string.incorrect_pass)
+
+                            Toast.makeText(
+                                context,
+                                getString(R.string.incorrect_pass),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 } else {
                     loginBinding.phoneNumberInput.error =

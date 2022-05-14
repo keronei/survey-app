@@ -122,6 +122,9 @@ object Libraries {
     const val work = "androidx.work:work-runtime-ktx:${Versions.work}"
     const val hiltWork = "androidx.hilt:hilt-work:${Versions.hilt_compiler}"
     const val multiProcessWorkManager = "androidx.work:work-multiprocess:${Versions.work}"
+
+    // Guava for hashing password
+    const val guavaAndroid = "com.google.guava:guava:31.1-android"
 }
 
 object TestLibraries {

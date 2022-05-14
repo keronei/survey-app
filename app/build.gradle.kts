@@ -86,6 +86,9 @@ android {
         implementation(Libraries.coroutines)
         implementation(Libraries.coroutinesAndroid)
 
+        // Guava android
+        implementation(Libraries.guavaAndroid)
+
         // Work
         implementation(Libraries.work)
         implementation(Libraries.hiltWork)
