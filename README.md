@@ -1,12 +1,48 @@
-# GradleBuildPlugins
+# Survey App
 
-👀 Sample project that shows you how to configure plugins. After generating the project from this template, remember to customize detekt rules and spotless plugin if needed:
+A simple app to do the following:
+ - Allow user to log in
+ - Download questionnaires(will be used interchangeably with surveys) from server
+ - Select a questionnaire and fill
+ - Syncs the responses every 15 minutes when network is available.
 
-- To customize detekt rules, edit the detekt.yml on your root directory
+## To Run
+ Here's how to run:
+ 1. Clone the repo from your editor(Android Studio/ IntelliJ)
+    1. `File` -> `New` -> `Project From Version Control`
+    2. Input `git@github.com:keronei/survey-app.git` if you have set up `SSH` 
+    or `https://github.com/keronei/survey-app.git` if you prefer https(not recommended).
+ 2. Once complete, it will ask if to trust project, Go ahead and Trust its execution.
+ 3. No special keys/dependencies, let it sync, then connect a device and run.
+ 4. Use a phone number with +254xxxxxxxxx and password 1234GYD%$
 
-- Inside the spotless folder, on your root directory - add your license file
+Let's assume laziness got you unexpectedly, you can try this [debug apk](https://github.com/keronei/survey-app/blob/main/releases/app-debug.apk)(might not be up-to-date).
 
-- Remember to refactor the package name :rocket:
+## Approach
+
+The approach of this app is as follows;
+1. Downloads the `json` file containing question definitions.
+2. Parses the questionnaires into `QuestionnaireDef` and questions to `QuestionDef`
+3. The widgets for various input types are predefined already e.g. `FloatWidget`, you can find this
+in app/com.keronei.survey/presentation/ui/views/widgets, which inherits from an abstract Class called `QuestionWidget`
+which defines most of the common functions like `saveAnswer`, `createAnswerView`, `getAnswerView`, `setupQuestionLabel` e.t.c.
+4. When a user selects a questionnaire to fill, a singleton class `QuestionnaireController` is given the questionnaire to 
+process and provide easy access to questions by offering functions such as `getNextQuestion`, `getPreviousQuestion`, `getCurrentEvent`
+which returns events like `EVENT_BEGGINING_QUESTIONNAIRE`, `EVENT_QUESTION`, `EVENT_END_QUESTIONNAIRE` which is useful
+in determining how to guide the user in providing responses.
+5. When the controller returns a question, a `WidgetFactory` class accepts a `QuestionDef` and returns a widget representing 
+the question, which can be added to the view.
+6. This approach enables re-usability of widgets and robustness in handling questionnaires.
+
+## Display
+Here are some screens to expect.
+
+<img src="documentation/Screenshot_login.png" width="250" height="470"/> <img src="documentation/Screenshot_empty_surveys.png" width="250" height="470"/> <img src="documentation/Screenshot_available_surveys.png" width="250" height="470"/>
+<img src="documentation/Screenshot_submissions.png" width="250" height="470"/> <img src="documentation/Screenshot_question.png" width="250" height="470"/> <img src="documentation/Screenshot_notification.png" width="250" height="470"/>
+
+The data is from the [https://run.mocky.io](https://run.mocky.io/v3/d628facc-ec18-431d-a8fc-9c096e00709a).
+
+Feel free to contribute to this project, and remember to follow the prerequisites as you work on the code.
 
 ### Prerequisites
 

@@ -1,3 +1,45 @@
 <resources>
-  <string name="app_name">GradlePlugins</string>
+    <string name="app_name">Survey App</string>
+    <string name="login">Login</string>
+    <string name="phone_number">e.g. +254123…</string>
+    <string name="password">Password</string>
+    <string name="survey_app_logo">Survey app logo</string>
+    <string name="let_s_start">Let\'s start</string>
+    <string name="profile">Profile</string>
+    <string name="select_a_questionnaire_to_fill">Select a questionnaire to fill.</string>
+    <string name="download_questionnaires">Download Questionnaires</string>
+    <string name="sync_status">Has been synced status.</string>
+    <string name="questionnaire_tabs">Questionnaire tabs</string>
+    <string name="finish">Finish</string>
+    <string name="no_questionnaire">No Questionnaires on your device.</string>
+    <string name="you_have_no_submissions_n_download_and_select_a_questionnaire_to_start_filling">You have no submissions. \n Download and select a questionnaire to start filling.</string>
+    <string name="loading">Getting questionnaires…</string>
+    <string name="take_picture">Open Camera</string>
+    <string name="retake_picture">Retake Picture</string>
+    <string name="cannot_open_submissions">Could\'t view submissions.</string>
+    <string name="loading_submissions">Waiting for submissions…</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="image_preview_window">Image preview window</string>
+    <string name="survey_end_instruction">You have reached the end of %s questionnaire. \n\nGive a suitable name and save.</string>
+    <string name="name">Name</string>
+    <string name="save">Save</string>
+    <string name="back_message">Do you want to exit this questionnaire? \n\nYou will loose your responses.</string>
+    <string name="channel_desc">Used to display sync statuses.</string>
+    <string name="notificationchannel_name">sync-status-channel</string>
+    <string name="nitification_title">Survey Submissions</string>
+    <string name="provide_your_phone_number">Provide your phone number.</string>
+    <string name="input_your_password">Input your password.</string>
+    <string name="invalid_phone_message">Ensure you start with +254, then input correct number.</string>
+    <string name="pass">1234GYD%$</string>
+    <string name="incorrect_pass">Incorrect password.</string>
+    <string name="email_subject">New Login On Survey App</string>
+    <string name="email_body_template">"Logged in from %s on %s using %s as the phone number."</string>
+    <string name="no_email_client">There are no email clients installed.</string>
+    <string name="success">Success</string>
+    <string name="lets_go">Let\'s go</string>
+    <string name="send_via">Send via</string>
+    <string name="email_sending_rationale">Your credentials are correct. We\'d like to send an email just before you start. \n\n
+                        We\'ve written it already, just hit send then come back to the app.\n\n
+                        "You only do this once.</string>
 </resources>

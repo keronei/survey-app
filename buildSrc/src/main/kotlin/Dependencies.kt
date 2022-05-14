@@ -6,12 +6,47 @@ object Versions {
     const val constraintLayout = "2.1.3"
     const val ktx = "1.7.0"
     const val material = "1.6.0-alpha02"
+    const val junit_ktx = "1.1.2"
+    const val ext_junit = "1.1.3"
+    const val lifecycle = "2.0.0"
 
     //Version codes for all the test libraries
     const val junit4 = "4.13.2"
     const val testRunner = "1.4.1-alpha03"
     const val espresso = "3.5.0-alpha03"
-    const val annotation = "1.4.0-alpha02"
+    const val annotation = "1.3.0"
+
+    // architecture
+    const val architecture = "2.4.1"
+    const val legacySupport = "1.0.0"
+
+    // Room
+    const val room_version = "2.4.1"
+
+    // DI - Hilt
+    const val hilt_version = "2.38.1"
+    const val hilt_viewmodel = "1.0.0-alpha03"
+    const val hilt_compiler = "1.0.0"
+    const val dagger_hilt_compiler = "2.5.0"
+    const val navigationFragment = "2.3.5"
+
+    // Network
+    const val retrofit = "2.9.0"
+    const val okhttp3 = "4.9.0"
+
+    // Converters
+    const val gson = "2.6.2"
+
+    // Logging - timber
+    const val timber = "5.0.1"
+
+    // work manager
+    const val work = "2.7.0"
+
+    // Coroutines
+    const val coroutines = "1.3.9"
+
+    const val glide = "4.13.0"
 
     // Gradle Plugins
     const val ktlint = "10.2.1"
@@ -34,6 +69,8 @@ object BuildPlugins {
     const val kotlinParcelizePlugin = "org.jetbrains.kotlin.plugin.parcelize"
     const val gradleVersionsPlugin = "com.github.ben-manes.versions"
     const val jacocoAndroid = "com.hiya.jacoco-android"
+    const val kotlinKapt = "kotlin-kapt"
+    const val hiltPlugin = "dagger.hilt.android.plugin"
 }
 
 object Libraries {
@@ -44,14 +81,68 @@ object Libraries {
         "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     const val ktxCore = "androidx.core:core-ktx:${Versions.ktx}"
     const val materialComponents = "com.google.android.material:material:${Versions.material}"
+    const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.architecture}"
+    const val legacySupportV4 = "androidx.legacy:legacy-support-v4:${Versions.legacySupport}"
+    const val lifecycleLivedata = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.architecture}"
+
+    // navigation
+    const val navigationFragment =
+        "androidx.navigation:navigation-fragment-ktx:${Versions.navigationFragment}"
+
+    // Room
+    const val room = "androidx.room:room-ktx:${Versions.room_version}"
+    const val room_compiler = "androidx.room:room-compiler:${Versions.room_version}"
+    const val room_testing = "androidx.room:room-testing:${Versions.room_version}"
+
+    // Hilt - DI
+    const val hiltGradlePlugin =
+        "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt_version}"
+    const val daggerHilt = "com.google.dagger:hilt-android:${Versions.hilt_version}"
+    const val hiltCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt_version}"
+    const val hiltViewModel = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hilt_viewmodel}"
+    const val hiltAndroidxCompiler = "androidx.hilt:hilt-compiler:${Versions.hilt_compiler}"
+    const val daggerHiltCompiler = "com.google.dagger:hilt-compiler:1.0.0"
+
+    // Network
+    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+    const val okhttp3BOM = "com.squareup.okhttp3:okhttp-bom:${Versions.okhttp3}"
+    const val okhttp3 = "com.squareup.okhttp3:okhttp"
+    const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor"
+
+    // Conversion
+    const val gson = "com.squareup.retrofit2:converter-gson:${Versions.gson}"
+
+    // LogCat
+    const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+
+    // Coroutines
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+    const val coroutinesAndroid =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+
+    // Work manager
+    const val work = "androidx.work:work-runtime-ktx:${Versions.work}"
+    const val hiltWork = "androidx.hilt:hilt-work:${Versions.hilt_compiler}"
+    const val multiProcessWorkManager = "androidx.work:work-multiprocess:${Versions.work}"
+
+    // Guava for hashing password
+    const val guavaAndroid = "com.google.guava:guava:31.1-android"
+
+    // glide
+    const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
 }
 
 object TestLibraries {
     //any test library is added here
     const val junit4 = "junit:junit:${Versions.junit4}"
+    const val junit_ktx = "androidx.test.ext:junit-ktx:${Versions.junit_ktx}"
     const val testRunner = "androidx.test:runner:${Versions.testRunner}"
     const val espresso = "androidx.test.espresso:espresso-core:${Versions.espresso}"
+    const val ext_test_junit4 = "androidx.test.ext:junit-ktx:${Versions.ext_junit}"
+    const val core_testing = "androidx.arch.core:core-testing:${Versions.lifecycle}"
     const val annotation = "androidx.annotation:annotation:${Versions.annotation}"
+    const val workmanager_testing = "androidx.work:work-testing:${Versions.work}"
+    const val hilt_android_testing = "com.google.dagger:hilt-android-testing:${Versions.hilt_version}"
 }
 
 

@@ -1,0 +1,143 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "80a5e5d27e901b973b80f9167c9d3bd3",
+    "entities": [
+      {
+        "tableName": "QuestionnaireDefDTO",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `language` TEXT NOT NULL, `questions` TEXT NOT NULL, `startQuestionId` TEXT NOT NULL, `downloadDate` INTEGER NOT NULL DEFAULT (strftime('%s','now')), PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "language",
+            "columnName": "language",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "questions",
+            "columnName": "questions",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startQuestionId",
+            "columnName": "startQuestionId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadDate",
+            "columnName": "downloadDate",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "(strftime('%s','now'))"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_QuestionnaireDefDTO_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_QuestionnaireDefDTO_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "SubmissionsDTO",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `submissionDate` INTEGER NOT NULL DEFAULT (strftime('%s','now')), `questionnaireId` TEXT NOT NULL, `submissionName` TEXT NOT NULL, `submissionAsJson` TEXT NOT NULL, `synced` INTEGER NOT NULL DEFAULT 0, FOREIGN KEY(`questionnaireId`) REFERENCES `QuestionnaireDefDTO`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "submissionDate",
+            "columnName": "submissionDate",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "(strftime('%s','now'))"
+          },
+          {
+            "fieldPath": "questionnaireId",
+            "columnName": "questionnaireId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "submissionName",
+            "columnName": "submissionName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "submissionAsJson",
+            "columnName": "submissionAsJson",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "synced",
+            "columnName": "synced",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_SubmissionsDTO_questionnaireId",
+            "unique": false,
+            "columnNames": [
+              "questionnaireId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SubmissionsDTO_questionnaireId` ON `${TABLE_NAME}` (`questionnaireId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "QuestionnaireDefDTO",
+            "onDelete": "RESTRICT",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "questionnaireId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '80a5e5d27e901b973b80f9167c9d3bd3')"
+    ]
+  }
+}
