@@ -30,6 +30,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
+import okhttp3.MultipartBody
 import java.util.*
 import javax.inject.Inject
 
@@ -116,4 +117,8 @@ class SubmissionsRepoImpl @Inject constructor(
             )
         )
     }
+
+    // Not initiating a post request because the endpoint is not configure.
+    override suspend fun sendMediaFiles(media: MultipartBody.Part): Flow<Boolean> =
+        flow { Random().nextBoolean() }
 }

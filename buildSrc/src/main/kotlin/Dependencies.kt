@@ -46,6 +46,8 @@ object Versions {
     // Coroutines
     const val coroutines = "1.3.9"
 
+    const val glide = "4.13.0"
+
     // Gradle Plugins
     const val ktlint = "10.2.1"
     const val detekt = "1.19.0"
@@ -125,6 +127,9 @@ object Libraries {
 
     // Guava for hashing password
     const val guavaAndroid = "com.google.guava:guava:31.1-android"
+
+    // glide
+    const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
 }
 
 object TestLibraries {

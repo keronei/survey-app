@@ -22,6 +22,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import okhttp3.MultipartBody
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -71,4 +72,14 @@ class RemoteDataSource @Inject constructor(private val apiService: QuerySurveysA
 
             awaitClose { cancel() }
         }
+
+    suspend fun sendMediaFiles(media: MultipartBody.Part) = callbackFlow {
+        try {
+            val sending = apiService.sendImage(media)
+            trySend(sending.isSuccessful)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            trySend(false)
+        }
+    }
 }

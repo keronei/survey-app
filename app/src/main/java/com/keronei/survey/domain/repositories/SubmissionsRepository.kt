@@ -19,6 +19,7 @@ import com.keronei.survey.core.AnswerData
 import com.keronei.survey.data.models.SubmissionStatus
 import com.keronei.survey.domain.models.Submission
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 
 interface SubmissionsRepository {
     fun getSubmissions(): Flow<List<Submission>>
@@ -30,4 +31,6 @@ interface SubmissionsRepository {
         submissionName: String,
         answers: List<AnswerData>
     )
+
+    suspend fun sendMediaFiles(media: MultipartBody.Part): Flow<Boolean>
 }

@@ -16,8 +16,12 @@
 package com.keronei.survey.data.remote
 
 import com.keronei.survey.data.remote.models.QuestionnaireResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.Part
 
 interface QuerySurveysApiService {
     @GET("/v3/d628facc-ec18-431d-a8fc-9c096e00709a")
@@ -25,4 +29,8 @@ interface QuerySurveysApiService {
 
     @GET("/v3/d628facc-ec18-431d-a8fc-9c096e00709a")
     suspend fun submitResponses(): Response<Any>
+
+    @Headers("Cache-Control: no-cache")
+    @POST("/v3/d628facc-ec18-431d-a8fc-9c096e00709a")
+    suspend fun sendImage( @Part photo: MultipartBody.Part): Response<Any>
 }

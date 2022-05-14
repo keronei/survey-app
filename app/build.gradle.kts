@@ -89,6 +89,9 @@ android {
         // Guava android
         implementation(Libraries.guavaAndroid)
 
+        // glide
+        implementation(Libraries.glide)
+
         // Work
         implementation(Libraries.work)
         implementation(Libraries.hiltWork)
