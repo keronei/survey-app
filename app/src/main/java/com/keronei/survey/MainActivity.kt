@@ -129,6 +129,19 @@ class MainActivity : AppCompatActivity() {
                             .setIcon(R.drawable.ic_baseline_account_circle_24)
                             .create()
                             .show()
+                    } else {
+                        MaterialAlertDialogBuilder(this)
+                            .setMessage(
+                                "You are currently not logged in. " +
+                                        "\n\nUse your phone number and provided password to log in."
+                            )
+                            .setPositiveButton("OK") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setTitle("No Account")
+                            .setIcon(R.drawable.ic_baseline_account_circle_24)
+                            .create()
+                            .show()
                     }
                 }
             }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Survey App</string>
     <string name="login">Login</string>
-    <string name="phone_number">Phone Number</string>
+    <string name="phone_number">e.g. 254123…</string>
     <string name="password">Password</string>
     <string name="survey_app_logo">Survey app logo</string>
     <string name="let_s_start">Let\'s start</string>
@@ -28,4 +28,6 @@
     <string name="channel_desc">Used to display sync statuses.</string>
     <string name="notificationchannel_name">sync-status-channel</string>
     <string name="nitification_title">Survey Submissions</string>
+    <string name="provide_your_phone_number">Provide your phone number.</string>
+    <string name="input_your_password">Input your password.</string>
 </resources>
