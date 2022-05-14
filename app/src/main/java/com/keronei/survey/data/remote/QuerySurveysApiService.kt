@@ -32,5 +32,5 @@ interface QuerySurveysApiService {
 
     @Headers("Cache-Control: no-cache")
     @POST("/v3/d628facc-ec18-431d-a8fc-9c096e00709a")
-    suspend fun sendImage( @Part photo: MultipartBody.Part): Response<Any>
+    suspend fun sendImage(@Part photo: MultipartBody.Part): Response<Any>
 }

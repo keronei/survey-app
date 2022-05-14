@@ -172,21 +172,19 @@ class LoginFragment : Fragment() {
         }
 
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-
     }
 
     private fun getDeviceName(): String? {
         val manufacturer: String = Build.MANUFACTURER
         val model: String = Build.MODEL
         return if (model.lowercase(Locale.getDefault())
-                .startsWith(manufacturer.lowercase(Locale.getDefault()))
+            .startsWith(manufacturer.lowercase(Locale.getDefault()))
         ) {
             capitalize(model)
         } else {
             capitalize(manufacturer) + " " + model
         }
     }
-
 
     private fun capitalize(s: String?): String {
         if (s == null || s.isEmpty()) {

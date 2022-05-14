@@ -93,8 +93,6 @@ class MainActivity : AppCompatActivity() {
                 .putLong(PASS_KEY, passwordHash.padToLong())
                 .apply()
         }
-
-
     }
 
     private fun navigateToHomeOrLogin() {
@@ -115,7 +113,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -154,7 +151,6 @@ class MainActivity : AppCompatActivity() {
 
                                     controller.navigate(R.id.action_homeFragment_to_loginFragment)
                                 }
-
                             }
                             .setTitle(savedPhone)
                             .setIcon(R.drawable.ic_baseline_account_circle_24)
@@ -164,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                         MaterialAlertDialogBuilder(this)
                             .setMessage(
                                 "You are currently not logged in. " +
-                                        "\n\nUse your phone number and provided password to log in."
+                                    "\n\nUse your phone number and provided password to log in."
                             )
                             .setPositiveButton("OK") { dialog, _ ->
                                 dialog.dismiss()
@@ -221,7 +217,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
-
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

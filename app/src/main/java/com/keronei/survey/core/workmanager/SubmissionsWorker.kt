@@ -61,11 +61,11 @@ class SubmissionsWorker @AssistedInject constructor(
             )
 
             /** Step 1: Get the uris
-            // prepareToSendImages()
+             // prepareToSendImages()
 
-            Step 2: Send the images
+             Step 2: Send the images
 
-            Step 3: Clean Up the disk.
+             Step 3: Clean Up the disk.
              **/
 
             if (availableSubmissions.status) Result.success() else Result.failure()
@@ -97,9 +97,8 @@ class SubmissionsWorker @AssistedInject constructor(
         )
         val photo = toMultiPartFile(bytes, "profile${System.currentTimeMillis()}")
 
-        //Now pass them to api, we are using Retrofit
+        // Now pass them to api, we are using Retrofit
         submissionsRepository.sendMediaFiles(photo)
-
     }
 
     private fun toMultiPartFile(
@@ -110,7 +109,7 @@ class SubmissionsWorker @AssistedInject constructor(
             byteArray.toRequestBody("image/*".toMediaTypeOrNull(), 0, byteArray.size)
 
         return MultipartBody.Part.createFormData(
-            "photo", //photo is the name in the api
+            "photo", // photo is the name in the api
             fileName,
             reqFile
         )
@@ -136,7 +135,6 @@ class SubmissionsWorker @AssistedInject constructor(
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
-
                 }
             })
         }
