@@ -17,7 +17,6 @@ package com.keronei.survey.data.remote
 
 import com.keronei.survey.core.Resource
 import com.keronei.survey.data.remote.models.QuestionnaireResponse
-import com.keronei.survey.domain.models.ServerSubmission
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose

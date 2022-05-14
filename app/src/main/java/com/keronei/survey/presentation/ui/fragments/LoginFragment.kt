@@ -15,7 +15,10 @@
  */
 package com.keronei.survey.presentation.ui.fragments
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +28,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.common.hash.Hashing
 import com.keronei.survey.R
 import com.keronei.survey.core.Constants.IS_LOGGED_IN_KEY
@@ -33,8 +37,9 @@ import com.keronei.survey.core.Constants.PHONE_NUMBER_KEY
 import com.keronei.survey.databinding.LoginFragmentBinding
 import com.keronei.survey.presentation.ui.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.nio.charset.Charset
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -42,6 +47,8 @@ import javax.inject.Inject
 class LoginFragment : Fragment() {
 
     val viewModel: LoginViewModel by activityViewModels()
+
+    private val parser = SimpleDateFormat("dd.MM.yyyy at hh:mm a", Locale.US)
 
     private lateinit var loginBinding: LoginFragmentBinding
 
@@ -59,7 +66,6 @@ class LoginFragment : Fragment() {
         setOnClickListeners()
 
         return loginBinding.root
-
     }
 
     private fun setOnClickListeners() {
@@ -93,9 +99,7 @@ class LoginFragment : Fragment() {
 
                             editor.apply()
 
-                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-
-                            sendEmail()
+                            notifyUserToSendMail(providedPhone.toString())
                         } else {
                             loginBinding.passwordInput.error = getString(R.string.incorrect_pass)
 
@@ -120,7 +124,73 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun sendEmail() {
+    private fun notifyUserToSendMail(phone: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage(
+                getString(R.string.email_sending_rationale)
+            )
+            .setPositiveButton(getString(R.string.lets_go)) { dialog, _ ->
+                sendEmailAndNavigate(phone)
+                dialog.dismiss()
+            }
+            .setTitle(getString(R.string.success))
+            .setIcon(R.drawable.ic_baseline_send_24)
+            .create()
+            .show()
+    }
 
+    private fun sendEmailAndNavigate(phoneNumber: String) {
+        val emailDispatchIntent = Intent(Intent.ACTION_SEND)
+        emailDispatchIntent.type = "message/rfc822"
+
+        emailDispatchIntent.putExtra(Intent.EXTRA_EMAIL, "tech@pula.io")
+        emailDispatchIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
+
+        val emailBody = getString(
+            R.string.email_body_template,
+            getDeviceName(),
+            parser.format(Calendar.getInstance().time),
+            phoneNumber
+        )
+
+        emailDispatchIntent.putExtra(Intent.EXTRA_TEXT, emailBody)
+
+        try {
+            startActivity(Intent.createChooser(emailDispatchIntent, getString(R.string.send_via)))
+        } catch (ex: ActivityNotFoundException) {
+            Toast.makeText(
+                context,
+                getString(R.string.no_email_client),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+
+    }
+
+    private fun getDeviceName(): String? {
+        val manufacturer: String = Build.MANUFACTURER
+        val model: String = Build.MODEL
+        return if (model.lowercase(Locale.getDefault())
+                .startsWith(manufacturer.lowercase(Locale.getDefault()))
+        ) {
+            capitalize(model)
+        } else {
+            capitalize(manufacturer) + " " + model
+        }
+    }
+
+
+    private fun capitalize(s: String?): String {
+        if (s == null || s.isEmpty()) {
+            return ""
+        }
+        val first = s[0]
+        return if (Character.isUpperCase(first)) {
+            s
+        } else {
+            Character.toUpperCase(first).toString() + s.substring(1)
+        }
     }
 }

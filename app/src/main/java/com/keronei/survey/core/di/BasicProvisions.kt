@@ -86,5 +86,4 @@ object BasicProvisions {
     @Singleton
     fun providesPreferenceInstance(@ApplicationContext context: Context): SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
-
 }

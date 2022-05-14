@@ -17,7 +17,6 @@ package com.keronei.survey.data
 
 import com.google.gson.Gson
 import com.keronei.survey.core.AnswerData
-import com.keronei.survey.core.Resource
 import com.keronei.survey.data.local.LocalDataSource
 import com.keronei.survey.data.models.SubmissionStatus
 import com.keronei.survey.data.models.SubmissionsDTO
@@ -31,7 +30,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -77,7 +75,6 @@ class SubmissionsRepoImpl @Inject constructor(
 
             // mark sync status for dispatched responses
             val successStatus = result.first()
-
 
             if (successStatus) {
                 ids.forEach {

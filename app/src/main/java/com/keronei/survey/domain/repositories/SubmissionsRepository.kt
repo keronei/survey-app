@@ -16,7 +16,6 @@
 package com.keronei.survey.domain.repositories
 
 import com.keronei.survey.core.AnswerData
-import com.keronei.survey.core.Resource
 import com.keronei.survey.data.models.SubmissionStatus
 import com.keronei.survey.domain.models.Submission
 import kotlinx.coroutines.flow.Flow

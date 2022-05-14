@@ -30,11 +30,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.work.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.navigation.NavigationBarItemView
 import com.google.common.hash.Hashing
 import com.keronei.survey.core.Constants
 import com.keronei.survey.core.Constants.IS_LOGGED_IN_KEY
@@ -46,7 +44,6 @@ import com.keronei.survey.core.workmanager.SubmissionsWorker
 import com.keronei.survey.presentation.ui.viewmodel.QuestionsHelperViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -66,8 +63,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var outputWorkInfo: LiveData<List<WorkInfo>>
 
     private lateinit var controller: NavController
-
-    var redirected = false
 
     @Inject
     lateinit var preferences: SharedPreferences

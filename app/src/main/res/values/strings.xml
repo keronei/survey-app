@@ -33,4 +33,13 @@
     <string name="invalid_phone_message">Ensure you start with +254, then input correct number.</string>
     <string name="pass">1234GYD%$</string>
     <string name="incorrect_pass">Incorrect password.</string>
+    <string name="email_subject">New Login On Survey App</string>
+    <string name="email_body_template">"Logged in from %s on %s using %s as the phone number."</string>
+    <string name="no_email_client">There are no email clients installed.</string>
+    <string name="success">Success</string>
+    <string name="lets_go">Let\'s go</string>
+    <string name="send_via">Send via</string>
+    <string name="email_sending_rationale">Your credentials are correct. We\'d like to send an email just before you start. \n\n
+                        We\'ve written it already, just hit send then come back to the app.\n\n
+                        "You only do this once.</string>
 </resources>

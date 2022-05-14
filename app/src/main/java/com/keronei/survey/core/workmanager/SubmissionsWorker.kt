@@ -55,7 +55,6 @@ class SubmissionsWorker @AssistedInject constructor(
         }
     }
 
-
     private fun displayNotification(context: Context, message: String, status: Boolean) {
         val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(if (status) R.drawable.ic_baseline_cloud_sync_24 else R.drawable.ic_baseline_sync_problem_24)
@@ -66,7 +65,5 @@ class SubmissionsWorker @AssistedInject constructor(
             // Display the notification
             notify(message.length, builder.build())
         }
-
     }
-
 }
