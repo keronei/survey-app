@@ -30,4 +30,5 @@
     <string name="nitification_title">Survey Submissions</string>
     <string name="provide_your_phone_number">Provide your phone number.</string>
     <string name="input_your_password">Input your password.</string>
+    <string name="invalid_phone_message">Ensure you start with +254, then input correct number.</string>
 </resources>
