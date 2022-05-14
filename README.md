@@ -16,7 +16,7 @@ A simple app to do the following:
  3. No special keys/dependencies, let it sync, then connect a device and run.
  4. Use a phone number with +254xxxxxxxxx and password 1234GYD%$
 
-Let's assume laziness got you unexpectedly, you can try this [debug apk](https://link to apk)(might not be up-to-date).
+Let's assume laziness got you unexpectedly, you can try this [debug apk](https://github.com/keronei/survey-app/blob/main/releases/app-debug.apk)(might not be up-to-date).
 
 ## Approach
 
