@@ -8,12 +8,13 @@ A simple app to do the following:
 
 ## To Run
  Here's how to run:
- 1. Clone the repo from your editor
+ 1. Clone the repo from your editor(Android Studio/ IntelliJ)
     1. `File` -> `New` -> `Project From Version Control`
     2. Input `git@github.com:keronei/survey-app.git` if you have set up `SSH` 
     or `https://github.com/keronei/survey-app.git` if you prefer https(not recommended).
  2. Once complete, it will ask if to trust project, Go ahead and Trust its execution.
  3. No special keys/dependencies, let it sync, then connect a device and run.
+ 4. Use a phone number with +254xxxxxxxxx and password 1234GYD%$
 
 Let's assume laziness got you unexpectedly, you can try this [debug apk](https://link to apk)(might not be up-to-date).
 
