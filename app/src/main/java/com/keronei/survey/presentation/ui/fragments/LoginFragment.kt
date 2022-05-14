@@ -18,6 +18,7 @@ package com.keronei.survey.presentation.ui.fragments
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -48,7 +49,7 @@ class LoginFragment : Fragment() {
 
     val viewModel: LoginViewModel by activityViewModels()
 
-    private val parser = SimpleDateFormat("dd.MM.yyyy at hh:mm a", Locale.US)
+    private val parser = SimpleDateFormat("dd.MM.yyyy hh:mm a", Locale.US)
 
     private lateinit var loginBinding: LoginFragmentBinding
 
@@ -70,6 +71,7 @@ class LoginFragment : Fragment() {
 
     private fun setOnClickListeners() {
         loginBinding.btnLogin.setOnClickListener {
+
             if (loginBinding.phoneNumberInput.text.isNotEmpty()) {
 
                 val providedPhone = loginBinding.phoneNumberInput.text.trim()
@@ -140,11 +142,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun sendEmailAndNavigate(phoneNumber: String) {
-        val emailDispatchIntent = Intent(Intent.ACTION_SEND)
-        emailDispatchIntent.type = "message/rfc822"
-
-        emailDispatchIntent.putExtra(Intent.EXTRA_EMAIL, "tech@pula.io")
-        emailDispatchIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
 
         val emailBody = getString(
             R.string.email_body_template,
@@ -153,10 +150,19 @@ class LoginFragment : Fragment() {
             phoneNumber
         )
 
-        emailDispatchIntent.putExtra(Intent.EXTRA_TEXT, emailBody)
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("tech@pula.io"))
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
+        intent.putExtra(Intent.EXTRA_TEXT, emailBody)
 
         try {
-            startActivity(Intent.createChooser(emailDispatchIntent, getString(R.string.send_via)))
+            startActivity(
+                Intent.createChooser(
+                    intent,
+                    getString(R.string.send_via)
+                )
+            )
         } catch (ex: ActivityNotFoundException) {
             Toast.makeText(
                 context,
